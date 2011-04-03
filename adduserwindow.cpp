@@ -8,7 +8,7 @@ AddUserWindow::AddUserWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->cancelBtn, SIGNAL(pressed()), this, SLOT(on_cancelBtn_clicked()));
-    connect(ui->okBtn, SIGNAL(clicked()), this, SLOT(on_okBtn_clicked()));
+    connect(ui->okBtn, SIGNAL(pressed()), this, SLOT(on_okBtn_clicked()));
 }
 
 AddUserWindow::~AddUserWindow(){delete ui;}
@@ -26,6 +26,8 @@ void AddUserWindow::on_okBtn_clicked(){
     AddUserCtrl::getInstance()->setType(type);
     AddUserCtrl::getInstance()->setPassword(password);
     AddUserCtrl::getInstance()->addToDb();
+
+    this->close();
 
 }
 

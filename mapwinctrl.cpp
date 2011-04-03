@@ -114,29 +114,35 @@ void MapWinCtrl::setupPatients()
          reqCare = query.value(6).toInt();
 
          Patient * aPatient = new Patient(HealthCardNum, firstName,lastName,dateAdmitted,datePlacedOnWaitingList,reqCare,occCare);
-         if(occCare == 0){
+         if(occCare == 0)
+         {
              if (listOfFacility.at(0)->NUsedBedAcute())
              {
                  listOfFacility.at(0)->addPatientAcute(aPatient);
              }
          }
 
-         else if (occCare == 1){
+         if (occCare == 1)
+         {
              if (listOfFacility.at(0)->NUsedBedComplex())
              {
                  listOfFacility.at(0)->addPatientComplex(aPatient);
              }
          }
 
-         else{
+         if (occCare == 2)
+         {
                  if (listOfFacility.at(0)->NUsedBedLTC())
                  {
                      listOfFacility.at(0)->addPatientLTC(aPatient);
                  }
-             }
+         }
 
   //       listOfPatient.append(aPatient);
      }
+     qDebug() <<listOfFacility.at(0)->getSizePatientAcute();
+     qDebug() <<listOfFacility.at(0)->getSizePatientComplex();
+     qDebug() <<listOfFacility.at(0)->getSizePatientLTC();
      query.clear();
 }
 

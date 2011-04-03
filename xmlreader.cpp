@@ -7,6 +7,8 @@
 #include <QtXmlPatterns/QXmlSchema>
 #include <QtXmlPatterns/QXmlSchemaValidator>
 
+XMLReader* XMLReader::anInstance =NULL;
+
 XMLReader::XMLReader()
 {
 
@@ -135,6 +137,14 @@ XMLReader::XMLReader()
            xmlRequest.append("</Facility>");
        xmlRequest.append("</Area>");
     xmlRequest.append("</Add>");*/
+}
+
+XMLReader* XMLReader::getInstance()
+{
+    if(!anInstance) //If it is doesn't already exist
+        anInstance = new XMLReader; //Create a new instance, new for the heap.
+
+    return anInstance;//Return the instance.
 }
 
 
@@ -372,8 +382,8 @@ QString  XMLReader::readAddRemoveBeds(QString aRequest, QString type){
             n = n.nextSibling();
             m = n.toElement();
         }
-        if(type == "Add"){return "patients added to waitingList";}
-        else {return "patients deleted from waitingList";}
+        if(type == "Add"){return "Beds added to Facilty";}
+        else {return "Beds deleted from Facility";}
     }
     return "-1";
 }
@@ -493,6 +503,8 @@ QString XMLReader::reportBeds(QString aRequest){
                  else if(weReport == true && mismatch == true){
                      response = buildBedMismatchReportResponse(requestID, CCC, AC, LTC, startDate, endDate, typeOf);
                  }
+
+                 qDebug() <<"mega"<<response;
 
                  return response;
         }
@@ -667,6 +679,7 @@ QString XMLReader::buildBedReportResponse(QString requestID, QString CCC, QStrin
               responseString.append(buildFacilityRecordDifference(ACT, CCCT, LTCT, AC, CCC, LTC, date));
 
           }
+         qDebug() <<"TESTMEGA";
 
               responseString.append("</Report>");
               responseString.append("</Response>");
@@ -1209,6 +1222,7 @@ void XMLReader::readRequestAmountOfBeds(QString xmlRequest){
          {
              qDebug() << str;
          }
+         qDebug() <<"test";
 
          qDebug() << "========================================================================================";
          qDebug() << "END OF BED";
@@ -1913,13 +1927,13 @@ QString XMLReader::addOrDeleteBeds(QString areaID, QString typeOfBed, QString fa
    QString fuckingAmount;
 
    if(typeOfBed.toUpper() == "AC"){
-       response.append("<Facility ID=\"" + facilityID + "\" ac=\"" + fuckingAmount.setNum(amount) +  "\"/>");
+       response.append("<Facility ID=\"" + facilityID + "\" AC=\"" + fuckingAmount.setNum(amount) +  "\"/>");
    }
    else if(typeOfBed.toUpper() == "CCC"){
-        response.append("<Facility ID=\"" + facilityID + "\" ccc=\"" + fuckingAmount.setNum(amount) +  "\"/>");
+        response.append("<Facility ID=\"" + facilityID + "\" CCC=\"" + fuckingAmount.setNum(amount) +  "\"/>");
    }
    else{
-        response.append("<Facility ID=\"" + facilityID + "\" ltc=\"" + fuckingAmount.setNum(amount) +  "\"/>");
+        response.append("<Facility ID=\"" + facilityID + "\" LTC=\"" + fuckingAmount.setNum(amount) +  "\"/>");
    }
 
 

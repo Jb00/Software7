@@ -12,8 +12,12 @@
 
 class XMLReader
 {
+private :
+        static XMLReader* anInstance; //The instance of the Singleton
+        XMLReader(); //So it cannot be call from the outside
+
 public:
-    XMLReader();
+     static XMLReader* getInstance();
     ~XMLReader();
     QString xmlRequest;
     QString readRequest(QString request);

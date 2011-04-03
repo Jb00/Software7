@@ -11,6 +11,7 @@ MessageController::MessageController()
 {
     connect(this,SIGNAL(mySignal()),this,SLOT(setStuff()));
    moveToThread(this);
+   srand(time(NULL));
 
 }
 
@@ -35,12 +36,14 @@ MessageController* MessageController::getInstance()
 
 void MessageController::setStuff()
 {
-    theMessages.append("test1");
-    theMessages.append("test2");
+  //  theMessages.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Add remote=\"true\"><Area ID=\"5\"><Facility ID=\"7\"><PatientList><Patient firstName=\"Jon\" lastName=\"Doe\" healthCardNumber=\"4444333222\" dateAdmitted=\"1920-03-02T11:15:32\" dateAdded=\"1920-03-02T11:15:32\" reqCare=\"1\" occCare=\"1\"/></PatientList></Facility></Area></Add>");
+  //  theMessages.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Add remote=\"true\"><Area ID=\"5\"><Facility ID=\"7\" CCC=\"10\"/></Area></Add>");
+
+    /*    theMessages.append("test2");
     theMessages.append("test3");
     theMessages.append("test4");
     theMessages.append("test5");
-    theMessages.append("test10");
+    theMessages.append("test10");*/
 
 
     Message * message = new Message;
@@ -55,19 +58,22 @@ void MessageController::setStuff()
 
  //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Delete remote=\"true\"><Area ID=\"5\"><Facility ID=\"7\" CCC=\"15\"/></Area></Delete>");
 
-      receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Add remote=\"true\"><Area ID=\"5\"><WaitingList><Patient firstName=\"Jon\" lastName=\"Doe\" healthCardNumber=\"545687\" dateAdded=\"1920-03-02T11:15:32\" reqCare=\"3\" occCare=\"1\"/></WaitingList></Area></Add>");
-      receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Delete remote=\"true\"><Area ID=\"5\"><WaitingList><Patient firstName=\"Jon\" lastName=\"Doe\" healthCardNumber=\"545687\" dateAdded=\"1920-03-02T11:15:32\" reqCare=\"3\" occCare=\"1\"/></WaitingList></Area></Delete>");
+ //     receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Add remote=\"true\"><Area ID=\"5\"><WaitingList><Patient firstName=\"Jon\" lastName=\"Doe\" healthCardNumber=\"545687\" dateAdded=\"1920-03-02T11:15:32\" reqCare=\"3\" occCare=\"1\"/></WaitingList></Area></Add>");
+ //    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Delete remote=\"true\"><Area ID=\"5\"><WaitingList><Patient firstName=\"Jon\" lastName=\"Doe\" healthCardNumber=\"545687\" dateAdded=\"1920-03-02T11:15:32\" reqCare=\"3\" occCare=\"1\"/></WaitingList></Area></Delete>");
 
+
+ //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"13\"/><ACRecord occupied=\"500\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
+ //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"7\"/><ACRecord occupied=\"0\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Response>");
 
        while(1)
         {
    //     message->treceive();
         if(!theMessages.isEmpty())
         {
-  //          message->tsend(theMessages.at(0));
+            message->tsend(theMessages.at(0));
             theMessages.removeAt(0);
         }
-    //    message->treceive();
+        message->treceive();
 
         //Deal with the head of the received messages //might do it for all messages so it is faster???
         if(!receivedMessage.isEmpty())
@@ -90,27 +96,42 @@ void MessageController::received(QString aReceived)
     qDebug() << receivedMessage.size();
 }
 
-QList<QString> MessageController::setGetData(QList<QString> aList,QString aType,QDate to,QDate from)
+
+//Set things for report.
+QList<QString> MessageController::setGetData(QList<QString> aList,QString AC,QString CCC,QString LTC,QDateTime to,QDateTime from,QString type)
     {
     QList<QString> returnList;
     QString anId;
-    int id = random() * 5000;
+//    int id = rand() % 5000;
+    int id = 2705;
     anId.setNum(id);
+    qDebug() << id;
+    QString toString =to.toString("yyyy-MM-dThh:mm:ss");
+    QString fromString =from.toString("yyyy-MM-dThh:mm:ss");
     int size = aList.size();
     int k=0; //for sending
     int i=0; //For searching through the list of received
     QString compareString;
-    while (k < size)
-    {
-        toSend("");
-        k++;
-    }
+    if (type =="OccBed")
+        //JUST ONCE?
+        while (k < size)
+        {
+        //Facility A demands
+            toSend(XMLReader::getInstance()->requestAmountOfBeds(aList,AC,CCC,LTC,anId,toString,fromString));
+            k++;
+        }
+    //Example that we received asking us our bed.
 
-    qint64 value = QDateTime::currentMSecsSinceEpoch() + 10000; //Time to stop at (10 seconds after now)
-    qint64 now = QDateTime::currentMSecsSinceEpoch(); //now time
+    //Facility B receive this
+    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"500\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
 
+
+
+    QTime t;
+    t.start();
     //For 10 seconds
-    while(value >now )
+    //Wait to see if B will answers
+    while(t.elapsed() < 5000 && returnList.size() != size)
     {
         //Check for each element in the received list if they have the id requested
         while(i <receivedMessage.size())
@@ -126,15 +147,16 @@ QList<QString> MessageController::setGetData(QList<QString> aList,QString aType,
             }
 
             //If they are equal then add to return list and remove from received list.
-            if (requestID.compare(anId))
+            if (requestID == anId)
             {
                 returnList.append(receivedMessage.at(i));
                 receivedMessage.removeAt(i);
             }
         }
         //Retake time
-        now = QDateTime::currentMSecsSinceEpoch(); //now time
     }
+
+    qDebug() <<"Size "<<returnList.size();
 
     if(returnList.empty())
         returnList.append("Empty");
@@ -143,7 +165,7 @@ QList<QString> MessageController::setGetData(QList<QString> aList,QString aType,
 
 void MessageController::xmlToAction(QString aXML)
 {
-    XMLReader *xr = new XMLReader();
+    //XMLReader *xr = new XMLReader();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +173,7 @@ void MessageController::xmlToAction(QString aXML)
     //bed or add/delete people from a a waiting list                                                //
     //then the response that needs to be sent back will go in a QString , then you just             //
     //send them back that QString                                                                   //
-    QString somethingThatTheyHaveAskedUsToDo =  xr->readRequest(aXML);                              //
+    QString somethingThatTheyHaveAskedUsToDo =  XMLReader::getInstance()->readRequest(aXML);        //
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
     qDebug() << "the Response " << somethingThatTheyHaveAskedUsToDo;

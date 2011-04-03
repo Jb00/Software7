@@ -16,6 +16,7 @@
 
 #include "mapwinctrl.h"
 #include <stdlib.h> //For random
+#include <time.h>
 
 
 class MessageController : public QThread
@@ -36,7 +37,7 @@ public:
         ~MessageController();
         void run();
         void received(QString);
-        QList<QString> setGetData(QList<QString>,QString,QDate,QDate);
+        QList<QString> setGetData(QList<QString>,QString,QString,QString,QDateTime,QDateTime,QString);
 
 private slots:
    // void sendMessage();

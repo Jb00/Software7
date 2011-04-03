@@ -40,7 +40,10 @@ SOURCES += main.cpp\
     xmlreader.cpp \
     facilitywinctrl.cpp \
     waitingctrl.cpp \
-    waitinglistwindow.cpp
+    waitinglistwindow.cpp \
+    Graph.cpp \
+    Histogram.cpp \
+    ReportController.cpp
 
 HEADERS  += loginwindow.h \
     User.h \
@@ -68,7 +71,10 @@ HEADERS  += loginwindow.h \
     xmlreader.h \
     facilitywinctrl.h \
     waitingctrl.h \
-    waitinglistwindow.h
+    waitinglistwindow.h \
+    Graph.h \
+    Histogram.h \
+    ReportController.h
 
 FORMS    += loginwindow.ui \
     mapwindow.ui \

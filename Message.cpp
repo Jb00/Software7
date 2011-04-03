@@ -13,11 +13,11 @@ Message::Message()
 
 void Message::tsend(QString aMessage)
 {
-  //  qDebug() <<aMessage;
+    qDebug() <<aMessage;
    QByteArray datagram(aMessage.toAscii());
 
   //  QByteArray datagram = "Message";
-    udpSocket->writeDatagram(datagram.data(), datagram.size(),QHostAddress("192.168.0.15"),45555);
+    udpSocket->writeDatagram(datagram.data(), datagram.size(),QHostAddress("192.168.0.10"),45555);
 }
 
 void Message::treceive()
@@ -32,7 +32,7 @@ void Message::treceive()
             udpReceive->readDatagram(datagram.data(), datagram.size());
       //      ui->label->setText(tr("Received datagram: \"%1\"").arg(datagram.data()));
 
-     //       qDebug() << datagram.data();
+            qDebug() << datagram.data();
             MessageController::getInstance()->received(datagram.data());
 
         }

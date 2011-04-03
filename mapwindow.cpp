@@ -17,6 +17,7 @@ MapWindow::MapWindow(const QString &filePath): ui(new Ui::MapWindow)
     connect(ui->actionAdd_newUser, SIGNAL(triggered()), this, SLOT(createUser_clicked()));
     connect(ui->actionCreate_Facility, SIGNAL(triggered()), this, SLOT(createFac_clicked()));
     connect(ui->actionFacilityView,SIGNAL(triggered()), this, SLOT(facilityView()));
+    connect(ui->actionAbout,SIGNAL(triggered()), this, SLOT(reportSetup()));
 
     colorList = new QList<QColor>();
     facSizeList = new QList<int>();
@@ -47,13 +48,23 @@ void MapWindow::facilityView()
 void MapWindow::reportSetup()
 {
     QList<QString> listResponse;
-    QList<QString> listFacilityDemanded;
-    listFacilityDemanded <<"test" << "Test2";
-    QString type ="AC";
-    QDate aDateB(1990,5,12);
-    QDate aDateA(1994,5,12);
-    listResponse = MessageController::getInstance()->setGetData(listFacilityDemanded,type,aDateB,aDateA);
-    qDebug() << listResponse.size();
+    QList<QString>  listFacilityDemanded;
+    listFacilityDemanded.append("7");
+    QString AC ="1";
+    QString CCC ="1";
+    QString LTC ="1";
+    QDateTime aDateA = QDateTime::fromString("1994-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+
+    QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+
+    listResponse = MessageController::getInstance()->setGetData(listFacilityDemanded,"1","1","1",aDateB,aDateA,"OccBed");
+    //qDebug() <<XMLReader::getInstance()->requestAmountOfBeds(listFacilityDemanded,"1","1","1",aDateB,aDateA);
+ //   qDebug() << listResponse.at(0).;
+    for (int i =0; i<listResponse.size();i++)
+    {
+        qDebug() << "FUCK ";
+ //      qDebug()<< XMLReader::getInstance()->readRequest(listResponse.at(i));
+    }
 }
 
 /*

@@ -49,10 +49,6 @@ void AddWLController::addWaitingListXML(QString aHealthCardNum,QString aFName,QS
     aFacility = MapWinCtrl::getInstance()->getFacilityFromid(idFacilityString);
     aFacility->addWaitingList(aPatient); //Add patient to the WL
 
-    qDebug()<< "FUCK YOU WORK BITCH :"<<aFacility->getSizeWL();
-
-
-
     if (idFacilityString.toInt() == MapWinCtrl::getInstance()->getId())
     {
         QSqlQuery query;
