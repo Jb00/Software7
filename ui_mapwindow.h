@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mapwindow.ui'
 **
-** Created: Mon Apr 4 00:49:20 2011
+** Created: Mon Apr 4 10:25:01 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -43,6 +43,7 @@ public:
     QAction *actionCreate_Facility;
     QAction *actionDelete_Facility;
     QAction *actionFacilityView;
+    QAction *actionGen;
     QWidget *centralWidget;
     QLabel *mapImg;
     QMenuBar *menuBar;
@@ -54,6 +55,7 @@ public:
     QMenu *menuZoom;
     QMenu *menuHelp;
     QMenu *menuAdmin;
+    QMenu *menuGenReport;
 
     void setupUi(QMainWindow *MapWindow)
     {
@@ -94,6 +96,8 @@ public:
         actionDelete_Facility->setObjectName(QString::fromUtf8("actionDelete_Facility"));
         actionFacilityView = new QAction(MapWindow);
         actionFacilityView->setObjectName(QString::fromUtf8("actionFacilityView"));
+        actionGen = new QAction(MapWindow);
+        actionGen->setObjectName(QString::fromUtf8("actionGen"));
         centralWidget = new QWidget(MapWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         mapImg = new QLabel(centralWidget);
@@ -119,12 +123,15 @@ public:
         menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         menuAdmin = new QMenu(menuBar);
         menuAdmin->setObjectName(QString::fromUtf8("menuAdmin"));
+        menuGenReport = new QMenu(menuBar);
+        menuGenReport->setObjectName(QString::fromUtf8("menuGenReport"));
         MapWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuView->menuAction());
         menuBar->addAction(menuAdmin->menuAction());
         menuBar->addAction(menuHelp->menuAction());
+        menuBar->addAction(menuGenReport->menuAction());
         menuFile->addAction(menuSearch->menuAction());
         menuFile->addSeparator();
         menuFile->addAction(actionLogout);
@@ -150,6 +157,7 @@ public:
         menuAdmin->addAction(actionAdd_newUser);
         menuAdmin->addSeparator();
         menuAdmin->addAction(actionCreate_Facility);
+        menuGenReport->addAction(actionGen);
 
         retranslateUi(MapWindow);
 
@@ -176,6 +184,7 @@ public:
         actionCreate_Facility->setText(QApplication::translate("MapWindow", "Create Facility", 0, QApplication::UnicodeUTF8));
         actionDelete_Facility->setText(QApplication::translate("MapWindow", "Delete Facility", 0, QApplication::UnicodeUTF8));
         actionFacilityView->setText(QApplication::translate("MapWindow", "FacilityView", 0, QApplication::UnicodeUTF8));
+        actionGen->setText(QApplication::translate("MapWindow", "Gen", 0, QApplication::UnicodeUTF8));
         mapImg->setText(QString());
         menuFile->setTitle(QApplication::translate("MapWindow", "File", 0, QApplication::UnicodeUTF8));
         menuSearch->setTitle(QApplication::translate("MapWindow", "Search", 0, QApplication::UnicodeUTF8));
@@ -185,6 +194,7 @@ public:
         menuZoom->setTitle(QApplication::translate("MapWindow", "Zoom", 0, QApplication::UnicodeUTF8));
         menuHelp->setTitle(QApplication::translate("MapWindow", "Help", 0, QApplication::UnicodeUTF8));
         menuAdmin->setTitle(QApplication::translate("MapWindow", "Admin", 0, QApplication::UnicodeUTF8));
+        menuGenReport->setTitle(QApplication::translate("MapWindow", "Report", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

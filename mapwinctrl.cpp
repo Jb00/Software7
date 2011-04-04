@@ -13,18 +13,18 @@ MapWinCtrl::MapWinCtrl()
     QDateTime aDate = QDateTime::fromString("2003-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
 
     //fake data
-    aFacility2 = new Facility(5,"TheFacility",4,2,4,5,0); //Will use the main facility list, but for now.LEt's assume 1 facility TO CHANGE
+ /*   aFacility2 = new Facility(5,"TheFacility",4,2,4,5,0); //Will use the main facility list, but for now.LEt's assume 1 facility TO CHANGE
     aFacility3 = new Facility(8,"ttt",4,50,0,0,6); //Will use the main facility list, but for now.LEt's assume 1 facility TO CHANGE
     aFacility4 = new Facility(9,"eeee",70,2,80,5,0); //Will use the main facility list, but for now.LEt's assume 1 facility TO CHANGE
 
     aPatient15 = new Patient ("12e","Bob","Henry",aDate,aDate,7,8);
     aPatient16 = new Patient ("12e","Bob","Henry",aDate,aDate,7,8);
-    aPatient17 = new Patient ("12e","Bob","Henry",aDate,aDate,7,8);
+    aPatient17 = new Patient ("12e","Bob","Henry",aDate,aDate,7,8);*/
 
    setupFacility(); //Where in reality our Db will only contains 1 facility ? So only the first facility will be set there.
    setupPatients(); //Put all patients inside the facility
 //   listOfPatient.append(aPatient15);listOfPatient.append(aPatient16);listOfPatient.append(aPatient17);
-   listOfFacility.append(aFacility2);listOfFacility.append(aFacility3);listOfFacility.append(aFacility4);
+//   listOfFacility.append(aFacility2);listOfFacility.append(aFacility3);listOfFacility.append(aFacility4);
    MessageController::getInstance()->start();
 
 
@@ -223,6 +223,13 @@ void MapWinCtrl::setReport()
 {
    ReportController::getInstance()->occRateAC();
   //  ReportController::getInstance()->mismatchCCCLTC();
+}
+
+void MapWinCtrl::goToGenerate(){
+
+    reportWin = new GenReportWin();
+    reportWin->show();
+    genCTRL::center(*reportWin);
 }
 
 Facility*  MapWinCtrl::getFacilityFromid(QString anId)

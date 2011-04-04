@@ -13,6 +13,7 @@
 #include "adduserwindow.h"
 #include "addfacility.h"
 #include "ReportController.h"
+#include "genreportwin.h"
 
 /*
 
@@ -45,6 +46,7 @@ public:
     void setWlArray(QString,QString);
     int getWlArray(int);
     void setReport();
+    void goToGenerate();
 
 
     void invalid();
@@ -60,6 +62,7 @@ private:
     AddFacility* addFac;
     FacilityWindow* aFacilityView;
     InvalidWindow* invalidWin;
+    GenReportWin* reportWin;
     int wlArray[5];
 
     //FAKE DATA TEST

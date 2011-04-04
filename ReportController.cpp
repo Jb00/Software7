@@ -172,7 +172,6 @@ void ReportController::mismatchCCCLTC()
 
     QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
 
-    qDebug() << aDateB.c - aDateA;
 
     listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"CCC","LTC");
 
@@ -200,8 +199,6 @@ void ReportController::mismatchCCCLTC()
         listData.append(listDivised.at(z+1).toDouble()); //Set to double value
     }
 
-
-
     listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
     listData.append(350);listData.append(175);listData.append(87);
 
@@ -222,6 +219,43 @@ void ReportController::sizeWL()
     //Answer #3 for facility id = 3 : 40
 
     //NOT TESTED But assumed to be correct
+    QList<QString> listFacilityDemanded;
+    listFacilityDemanded.append("7");
+    QList<QString> listResponse;
+    QList<QString> listMismatch;
+    QList<QString> listDivised;
+    listId.clear();
+    listData.clear();
+
+    QDateTime aDateA = QDateTime::fromString("1994-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+    QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+
+
+    listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"CCC","LTC");
+
+    for (int i =0; i<listResponse.size();i++)
+    {
+        //listMismatch.append(XMLReader::getInstance()->readRequestAmountOfBeds(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
+    }
+
+    listMismatch <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+ //   listIdBed <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    for (int k =0; k<listMismatch.size();k++)
+    {
+         listDivised.append(listMismatch.at(k).split(","));
+
+    }
+
+    //0,2,4 Even will be only the ID name
+    //1,3,5 Odd will be data
+    for (int z =0; z<listDivised.size();z=z+2)
+    {
+        listId.append(listDivised.at(z));
+        listData.append(listDivised.at(z+1).toDouble()); //Set to double value
+    }
 
     listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
     listData.append(350);listData.append(175);listData.append(87);

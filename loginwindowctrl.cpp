@@ -7,7 +7,7 @@ LoginWindowCtrl::LoginWindowCtrl(QWidget *parent) :
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
  //   db.setDatabaseName ("/home/bartosz/Documents/EOBCSTORAGE");
-    db.setDatabaseName ("/home/bob/repo/jb2/EOBCSTORAGE");
+    db.setDatabaseName ("/home/bob/repo/jb2/db/EOBCSTORAGE");
     if (!db.open()) {
         QMessageBox::warning(this, QObject::tr("Unable to open database"), QObject::tr("An error occured while "
                                                                      "opening the connection: ") + db.lastError().text());}

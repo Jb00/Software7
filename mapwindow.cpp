@@ -18,12 +18,15 @@ MapWindow::MapWindow(const QString &filePath): ui(new Ui::MapWindow)
     connect(ui->actionCreate_Facility, SIGNAL(triggered()), this, SLOT(createFac_clicked()));
     connect(ui->actionFacilityView,SIGNAL(triggered()), this, SLOT(facilityView()));
     connect(ui->actionAbout,SIGNAL(triggered()), this, SLOT(reportSetup()));
+    connect(ui->actionGen, SIGNAL(triggered()), this, SLOT(generateReport_clicked()));
 
     colorList = new QList<QColor>();
     facSizeList = new QList<int>();
 }
 
 MapWindow::~MapWindow(){delete ui;}
+
+void MapWindow::generateReport_clicked(){MapWinCtrl::getInstance()->goToGenerate();}
 
 
 void MapWindow::createUser_clicked(){MapWinCtrl::getInstance()->goToAddUser();}

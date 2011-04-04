@@ -43,7 +43,9 @@ SOURCES += main.cpp\
     waitinglistwindow.cpp \
     Graph.cpp \
     Histogram.cpp \
-    ReportController.cpp
+    ReportController.cpp \
+    genreportwin.cpp \
+    genreportctrl.cpp
 
 HEADERS  += loginwindow.h \
     User.h \
@@ -74,7 +76,9 @@ HEADERS  += loginwindow.h \
     waitinglistwindow.h \
     Graph.h \
     Histogram.h \
-    ReportController.h
+    ReportController.h \
+    genreportwin.h \
+    genreportctrl.h
 
 FORMS    += loginwindow.ui \
     mapwindow.ui \
@@ -83,4 +87,5 @@ FORMS    += loginwindow.ui \
     addfacility.ui \
     CreateNewFacility.ui \
     facilitywindow.ui \
-    waitinglistwindow.ui
+    waitinglistwindow.ui \
+    genreportwin.ui

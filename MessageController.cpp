@@ -69,6 +69,7 @@ void MessageController::setStuff()
  //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"25\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
 
     receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"7\"/><ACRecord occupied=\"120\"/></FacilityRecord></Report></Response>");
+    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"12\"/><ACRecord occupied=\"80\"/></FacilityRecord></Report></Response>");
 
        while(1)
         {
@@ -90,6 +91,14 @@ void MessageController::setStuff()
 
                qDebug()<<"SIZE LIST"<< reportList.size();
             }
+            else
+            {
+                if (XMLReader::getInstance()->readRequest(receivedMessage.at(0)) != "-1")
+                {
+                    theMessages.append(XMLReader::getInstance()->readRequest(receivedMessage.at(0)));
+                }
+            }
+
                 receivedMessage.removeAt(0);
         }
     }

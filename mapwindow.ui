@@ -102,10 +102,17 @@
     <addaction name="separator"/>
     <addaction name="actionCreate_Facility"/>
    </widget>
+   <widget class="QMenu" name="menuGenReport">
+    <property name="title">
+     <string>Report</string>
+    </property>
+    <addaction name="actionGen"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuAdmin"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuGenReport"/>
   </widget>
   <action name="actionAbout">
    <property name="text">
@@ -190,6 +197,11 @@
   <action name="actionFacilityView">
    <property name="text">
     <string>FacilityView</string>
+   </property>
+  </action>
+  <action name="actionGen">
+   <property name="text">
+    <string>Gen</string>
    </property>
   </action>
  </widget>
