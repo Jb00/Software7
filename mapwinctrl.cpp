@@ -219,6 +219,12 @@ void MapWinCtrl::setupFacility()
     query.clear();
 }
 
+void MapWinCtrl::setReport()
+{
+   ReportController::getInstance()->occRateAC();
+  //  ReportController::getInstance()->mismatchCCCLTC();
+}
+
 Facility*  MapWinCtrl::getFacilityFromid(QString anId)
 {
     int id = anId.toInt();

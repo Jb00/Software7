@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'waitinglistwindow.h'
 **
-** Created: Sat Apr 2 19:18:25 2011
+** Created: Mon Apr 4 00:50:03 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -63,7 +63,12 @@ void MessageController::setStuff()
 
 
  //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"13\"/><ACRecord occupied=\"500\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
- //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"7\"/><ACRecord occupied=\"0\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Response>");
+ //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"23205\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"7\"/><ACRecord occupied=\"0\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Response>");
+
+
+ //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"25\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
+
+    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Response ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord dateTime=\"2002-05-30T09:00:00\"><Facility ID=\"7\"/><ACRecord occupied=\"120\"/></FacilityRecord></Report></Response>");
 
        while(1)
         {
@@ -79,8 +84,13 @@ void MessageController::setStuff()
         if(!receivedMessage.isEmpty())
         {
             qDebug() << receivedMessage.at(0);
-            xmlToAction(receivedMessage.at(0));
-            receivedMessage.removeAt(0);
+            if(XMLReader::getInstance()->readRequest(receivedMessage.at(0)) == "-2")
+            {
+                reportList.append(receivedMessage.at(0)); //Add it to the report list
+
+               qDebug()<<"SIZE LIST"<< reportList.size();
+            }
+                receivedMessage.removeAt(0);
         }
     }
 }
@@ -98,7 +108,7 @@ void MessageController::received(QString aReceived)
 
 
 //Set things for report.
-QList<QString> MessageController::setGetData(QList<QString> aList,QString AC,QString CCC,QString LTC,QDateTime to,QDateTime from,QString type)
+QList<QString> MessageController::setGetData(QList<QString> aList,QString AC,QString CCC,QString LTC,QDateTime to,QDateTime from)
     {
     QList<QString> returnList;
     QString anId;
@@ -112,32 +122,31 @@ QList<QString> MessageController::setGetData(QList<QString> aList,QString AC,QSt
     int k=0; //for sending
     int i=0; //For searching through the list of received
     QString compareString;
-    if (type =="OccBed")
-        //JUST ONCE?
-        while (k < size)
-        {
-        //Facility A demands
-            toSend(XMLReader::getInstance()->requestAmountOfBeds(aList,AC,CCC,LTC,anId,toString,fromString));
-            k++;
-        }
+    //Facility A demands
+
+        toSend(XMLReader::getInstance()->requestAmountOfBeds(aList,AC,CCC,LTC,anId,toString,fromString));
+
     //Example that we received asking us our bed.
 
     //Facility B receive this
-    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"500\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
+        //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"500\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
 
-
+//    receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2705\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><ACRecord occupied=\"25\"/><CCCRecord occupied=\"0\"/><LTCRecord occupied=\"0\"/></FacilityRecord></Report></Request>");
 
     QTime t;
     t.start();
+    t.restart();
+    qDebug() << t.elapsed();
     //For 10 seconds
     //Wait to see if B will answers
-    while(t.elapsed() < 5000 && returnList.size() != size)
-    {
+   while((t.elapsed() < 100) && (returnList.size() < 500))
+   {
+
         //Check for each element in the received list if they have the id requested
-        while(i <receivedMessage.size())
+        while(i <reportList.size())
         {
             QString requestID;
-            compareString = receivedMessage.at(i);
+            compareString = reportList.at(i);
             QDomDocument doc("xmldocument");
             if (doc.setContent(compareString)) {
                 //Get the root element
@@ -149,9 +158,76 @@ QList<QString> MessageController::setGetData(QList<QString> aList,QString AC,QSt
             //If they are equal then add to return list and remove from received list.
             if (requestID == anId)
             {
-                returnList.append(receivedMessage.at(i));
-                receivedMessage.removeAt(i);
+                returnList.append(reportList.at(i));
+                reportList.removeAt(i);
             }
+        }
+        //Retake time
+    }
+
+    qDebug() << t.elapsed();
+    qDebug() <<"Size "<<returnList.size();
+
+    if(returnList.empty())
+        returnList.append("Empty");
+    return returnList;
+}
+
+QList<QString> MessageController::setgetMismatchOccLTC(QList<QString> aList, QDateTime from, QDateTime to,QString type,QString occupied)
+{
+    QList<QString> returnList;
+    QString anId;
+//    int id = rand() % 5000;
+    int id = 2705; //TO CHANGE AFTER TEST
+    anId.setNum(id);
+    QString toString =to.toString("yyyy-MM-dThh:mm:ss");
+    QString fromString =from.toString("yyyy-MM-dThh:mm:ss");
+    int size = aList.size();
+    int k=0; //for sending
+    int i=0; //For searching through the list of received
+    QString compareString;
+    //Facility A demands
+  //  QString XMLReader::requestMismatches(QList<QString> facilityIDs, QString typeOfBed, QString occupiedByBed, QString requestID, QString startDate, QString endDate);
+
+//    toSend(XMLReader::getInstance()->requestMismatches(aList,type,occupied,anId,fromString,toString)); WORKS
+
+
+    //Example that we received asking us our bed.
+
+    //Facility B receive this
+
+ //   receivedMessage.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><Request ID=\"2735\"><Report startDate=\"2002-05-30T09:00:00\" endDate=\"1994-05-30T09:00:00\"><FacilityRecord><Facility ID=\"7\"/><CCCRecord occupiedByLTC=\"0\"/></FacilityRecord></Report></Request>");
+
+
+    QTime t;
+    t.start();
+    //For 10 seconds
+    //Wait to see if B will answers
+    while(t.elapsed() < 5000 && returnList.size() < 500)
+    {
+        i=0;
+        //Check for each element in the received list if they have the id requested
+        while(i <reportList.size())
+        {
+            QString requestID;
+            compareString = reportList.at(i);
+            QDomDocument doc("xmldocument");
+            if (doc.setContent(compareString)) {
+                //Get the root element
+                QDomElement root = doc.documentElement();
+
+               requestID = root.attribute("ID");
+            }
+
+            //If they are equal then add to return list and remove from received list.
+            if (requestID == anId)
+            {
+                qDebug() <<"NOT EATEN";
+                returnList.append(reportList.at(i));
+                reportList.removeAt(i);
+                i--;
+            }
+            i++;
         }
         //Retake time
     }

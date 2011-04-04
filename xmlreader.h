@@ -29,6 +29,8 @@ public:
     void readRequestMismatches(QString xmlRequest);
     void readRequestWaitTimes(QString xmlRequest);
     void readRequestWaitingListSize(QString xmlRequest);
+
+    QString readRequestAmountOfBedsSUM(QString xmlRequest);
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
 

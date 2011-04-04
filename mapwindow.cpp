@@ -47,8 +47,11 @@ void MapWindow::facilityView()
 
 void MapWindow::reportSetup()
 {
-    QList<QString> listResponse;
-    QList<QString>  listFacilityDemanded;
+    MapWinCtrl::getInstance()->setReport();
+
+ /*   QList<QString> listResponse;
+    QList<QString> listFacilityDemanded;
+    QList<QString> listIdBed;
     listFacilityDemanded.append("7");
     QString AC ="1";
     QString CCC ="1";
@@ -63,8 +66,8 @@ void MapWindow::reportSetup()
     for (int i =0; i<listResponse.size();i++)
     {
         qDebug() << "FUCK ";
- //      qDebug()<< XMLReader::getInstance()->readRequest(listResponse.at(i));
-    }
+         listIdBed.append(XMLReader::getInstance()->readRequestAmountOfBeds(listResponse.at(i)));
+    }*/
 }
 
 /*

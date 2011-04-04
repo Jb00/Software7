@@ -24,6 +24,8 @@ void AddBedController::addtoBed(QString aNumberBed, QString aType, Facility *aFa
     bool ok; //to make sure the conversion String to number Worked;
     int numberBedInt; //To hold the String to int
     QString numberBed = aNumberBed;
+    QSqlQuery query;
+    QString queryText;
 
  //   QString type = typeid(*aFacility).name();
  //   std::cout <<'\n'<< typeid(aFacility).name();
@@ -42,14 +44,34 @@ void AddBedController::addtoBed(QString aNumberBed, QString aType, Facility *aFa
         if (numberBedInt < 0)
         {
             if(!aFacility->removeBedAcute(numberBedInt))
+            {
+                qDebug() <<"in db";
+                QSqlQuery query;
+                QString queryText;
+
+                //the main insert script
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                query.exec("update facility set AC = (SELECT SUM(AC) - 1 from facility) ;");
                 return; //invalid
+            }
         }
         else
         {
             for (int i=0; i< numberBedInt ; i++)
             {
+                qDebug() <<"in db";
+
+
+                //the main insert script
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                query.exec("update facility set AC = (SELECT SUM(AC)  + 1 from facility) ;");
+
+
                 aFacility->addBedAcute();
             }
+            query.exec("INSERT INTO bed_hist VALUES('" + numberBed + "', '0', '0', date()  || 'T' || time());");
         }
     }
     else

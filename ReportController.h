@@ -4,6 +4,7 @@
 #include "Graph.h"
 #include "Patient.h"
 #include "Facility.h"
+#include "MessageController.h"
 
 #include <QDesktopWidget>
 #include <QApplication>
@@ -25,7 +26,7 @@ public:
     void setupHistogram();
     void setupGraph();
     static ReportController* getInstance();
-    void mismatchCCCLTC(QList<Facility*>*);
+    void mismatchCCCLTC();
     void occRateLTC();
     void occRateCCC();
     void occRateAC();

@@ -29,15 +29,18 @@ private :
 
         QList<QString> theMessages;
         QList<QString> receivedMessage;
+        QList<QString> reportList;
         XMLReader *xr;
         void xmlToAction(QString );
+
 public:
         static MessageController* getInstance();
         void toSend(QString);
         ~MessageController();
         void run();
         void received(QString);
-        QList<QString> setGetData(QList<QString>,QString,QString,QString,QDateTime,QDateTime,QString);
+        QList<QString> setGetData(QList<QString>,QString,QString,QString,QDateTime,QDateTime);
+        QList<QString> setgetMismatchOccLTC(QList<QString>,QDateTime,QDateTime,QString,QString);
 
 private slots:
    // void sendMessage();

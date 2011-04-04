@@ -209,6 +209,9 @@ QString XMLReader::readRequest(QString aRequest)
         if (type == "Rebuild"){
             return readRebuildRequest(aRequest);
         }
+        if (type == "Response"){
+            return "-2";
+        }
 
         return "-1";
     }
@@ -1229,6 +1232,121 @@ void XMLReader::readRequestAmountOfBeds(QString xmlRequest){
 
 
   }
+}
+
+
+QString XMLReader::readRequestAmountOfBedsSUM(QString xmlRequest){
+        QDomDocument doc("xmldocument");
+        if (doc.setContent(xmlRequest)) {
+            //Get the root element
+            QDomElement root = doc.documentElement();
+            QDomNode n = root.firstChild();
+            QDomElement m = n.toElement();
+            QString requestID;
+
+           QString type = root.tagName();
+           requestID = root.attribute("ID");
+
+           QString AC;
+           QString CCC;
+           QString LTC;
+           QString startDate;
+           QString endDate;
+           QString facilityID;
+           QString startAmount;
+           QList<int> dateAndTimes;
+           QString differenceTime;
+           QString differenceAmount;
+
+
+            //request and responses
+            if(type == "Response") {
+                QDomNode n = root.firstChild();
+                QDomElement m = n.toElement();
+                m = n.toElement();
+
+                if(m.tagName() == "Report") {
+                    startDate = m.attribute("startDate");
+                    endDate = m.attribute("endDate");
+                    n = n.firstChild();
+                    m = n.toElement();
+
+
+
+                    while(!n.isNull()) {
+                        if(m.tagName() == "FacilityRecord") {
+                            QDomNode frNode = root.firstChild();
+                            QDomElement frElement = n.toElement();
+                            frNode = n.firstChild();
+                            frElement = frNode.toElement();
+                            while(!frNode.isNull()) {
+                                if(frElement.tagName() == "Facility") {
+                                    facilityID = frElement.attribute("ID");
+                                }
+                                if(frElement.tagName() == "ACRecord") {
+                                    startAmount = frElement.attribute("occupied");
+                                    AC = "1";
+                                }
+                                if(frElement.tagName() == "CCCRecord") {
+                                    startAmount = frElement.attribute("occupied");
+                                    CCC = "1";
+                                }
+                                if(frElement.tagName() == "LTCRecord") {
+                                    startAmount = frElement.attribute("occupied");
+                                    LTC = "1";
+                                }
+                                qDebug() << frElement.attribute("ID");
+                                frNode = frNode.nextSibling();
+                                frElement = frNode.toElement();
+                            }
+                            dateAndTimes.append(startAmount.toInt());
+                        }
+                        if(m.tagName() == "FacilityRecordDifference") {
+                            differenceTime = m.attribute("dateTime");
+                            QDomNode frNode = root.firstChild();
+                            QDomElement frElement = n.toElement();
+                            frNode = n.firstChild();
+                            frElement = frNode.toElement();
+                            if(frElement.tagName() == "ACRecord") {
+                                differenceAmount = frElement.attribute("occupied");
+                            }
+                            if(frElement.tagName() == "CCCRecord") {
+                                differenceAmount = frElement.attribute("occupied");
+                            }
+                            if(frElement.tagName() == "LTCRecord") {
+                                differenceAmount = frElement.attribute("occupied");
+                            }
+
+                            dateAndTimes.append(differenceAmount.toInt());
+                        }
+
+                        n = n.nextSibling();
+                        m = n.toElement();
+                    }
+
+
+                }
+            }
+
+
+            qDebug() << "START OF BED";
+            qDebug() << "========================================================================================";
+
+            if(facilityID == ""){return "-1";}
+             int str=0;
+             int sum=0;
+             foreach (str, dateAndTimes)
+             {
+                 sum = sum + str;
+             }
+
+             QString reposonse;
+            reposonse.setNum(sum);
+             return facilityID + "," + reposonse;
+
+             qDebug() << "========================================================================================";
+             qDebug() << "END OF BED";
+      }
 }
 
 void XMLReader::readRequestMismatches(QString xmlRequest){

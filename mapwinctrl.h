@@ -12,6 +12,7 @@
 #include "adduserctrl.h"
 #include "adduserwindow.h"
 #include "addfacility.h"
+#include "ReportController.h"
 
 /*
 
@@ -43,6 +44,7 @@ public:
     Facility* getFacilityFromid(QString);
     void setWlArray(QString,QString);
     int getWlArray(int);
+    void setReport();
 
 
     void invalid();
