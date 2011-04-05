@@ -16,12 +16,13 @@ public:
     void center(QWidget &);
     void setupHistogram();
     void setupGraph();
-    void mismatchCCCLTC();
+    void mismatchCCCLTC(QString,QString ,QString);
+    void mismatchACLTC(QString,QString ,QString);
     void occRateLTC();
     void occRateCCC();
-    void occRateAC(QString ,QString,QString ,QString, QString );
-    void sizeWL();
-    void waitingTime();
+    void occRateAC(QString,QString ,QString,QString ,QString, QString );
+    void sizeWL(QString,QString,QString);
+    void waitingTime(QString,QString,QString);
 
 
 

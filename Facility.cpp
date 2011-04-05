@@ -22,6 +22,11 @@ Facility::Facility(int anId,QString aName, int aX,int aY,int anACbed,int aCCCbed
 
 Facility::~Facility(){}
 
+QList<Patient*>* Facility::getListAcute(){return &listAcute;}
+QList<Patient*>* Facility::getListComplex(){return &listComplex;}
+QList<Patient*>* Facility::getListLTC(){return &listLTC;}
+
+
 
 //Add a bed Acute
 void Facility::addBedAcute()

@@ -6,11 +6,14 @@
 #include <QMessageBox>
 #include <QtXmlPatterns/QXmlSchema>
 #include <QtXmlPatterns/QXmlSchemaValidator>
+#include "addfacctrl.h"
+#include "mapwinctrl.h"
 
 XMLReader* XMLReader::anInstance =NULL;
 
 XMLReader::XMLReader()
 {
+
 
     xmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 
@@ -137,6 +140,8 @@ XMLReader::XMLReader()
            xmlRequest.append("</Facility>");
        xmlRequest.append("</Area>");
     xmlRequest.append("</Add>");*/
+
+
 }
 
 XMLReader* XMLReader::getInstance()
@@ -160,6 +165,10 @@ QString XMLReader::readRequest(QString aRequest)
         QString remote = root.attribute("remote");
         QString type = root.tagName();
         QString facilityID;
+        int aourFacilityID = MapWinCtrl::getInstance()->getId();
+        QString ourFacilityID;
+        ourFacilityID.setNum(aourFacilityID);
+
 
        //adding and deleting
         if(type == "Add" || type == "Delete") {
@@ -169,8 +178,11 @@ QString XMLReader::readRequest(QString aRequest)
 
             if(m.tagName() == "Facility") {
                 facilityID = m.attribute("ID");
-                if (!(facilityID ==  "7" && remote == "true" || remote == "false")){return "-1";}
-                if (m.attributes().count() > 1){
+                if (!(facilityID ==  ourFacilityID && remote == "true" || remote == "false")){return "-1";}
+                if (m.attributes().count() > 3){
+                    return readAddRemoveFacility(aRequest, type);
+                }
+                else if(m.attributes().count() > 3){
                     return readAddRemoveBeds(aRequest, type);
                 }
                 else{
@@ -178,7 +190,7 @@ QString XMLReader::readRequest(QString aRequest)
                 }
             }
             else if(m.tagName() == "WaitingList") {
-                return readAddorDeleteToWaitingList(aRequest, type);
+               return readAddorDeleteToWaitingList(aRequest, type);
             }
         }
 
@@ -196,28 +208,116 @@ QString XMLReader::readRequest(QString aRequest)
                 if(m.tagName() == "FacilityRecord") {
                     return reportBeds(aRequest);
                 }
-                else if(m.tagName() == "WaitingListRecord") {
-                    if (m.attributes().count() > 0){
-                        return reportWaitingListSize(aRequest);
-                    }
-                    else{
-                       return reportWaitingList(aRequest);
-                    }
+                else if (m.tagName() == "Area"){
+                    n = n.firstChild();
+                    m = n.toElement();
+                        if(m.tagName() == "WaitingListRecord") {
+                            if (m.attributes().count() > 0){
+                                return reportWaitingListSize(aRequest);
+                            }
+                            else{
+
+
+                               return reportWaitingList(aRequest);
+                            }
+                        }
+
                 }
             }
         }
         if (type == "Rebuild"){
             return readRebuildRequest(aRequest);
         }
-        if (type == "Response"){
-            return "-2";
-        }
+        if(type == "Response"){return "Banana";}
 
         return "-1";
     }
             return "-1";
 }
 
+
+QString XMLReader::readAddRemoveFacility(QString aRequest, QString aType){
+
+    QDomDocument doc("xmldocument");
+    if (doc.setContent(aRequest)) {
+        //Get the root element
+        QDomElement root = doc.documentElement();
+        QDomNode n = root.firstChild();
+        QDomElement m = n.toElement();
+
+        QString remote = root.attribute("remote");
+        QString type = root.tagName();
+        QString facilityID;
+
+
+        QString facilityName = "";
+        QString x = "0";
+        QString y = "0";
+        QString aAC ="0";
+        QString aCCC = "0";
+        QString aLTC = "0";
+
+       //adding and deleting
+        if(type == "Add" || type == "Delete") {
+            QDomNode n = root.firstChild();
+            QDomElement m = n.toElement();
+            m = n.firstChild().toElement();
+
+            if(m.tagName() == "Facility") {
+                facilityID = m.attribute("ID");
+                facilityName = m.attribute("name");
+                x = m.attribute("coordinateX");
+                y = m.attribute("coordinateY");
+                aAC = m.attribute("AC");
+                aCCC = m.attribute("CCC");
+                aLTC = m.attribute("LTC");
+            }
+        }
+
+        if(!(facilityID == "")){
+
+            qDebug() << MapWinCtrl::getInstance()->listOfFacility.size();
+
+            MapWinCtrl::getInstance()->addToFacilityList(facilityID.toInt(),facilityName,x.toInt(),y.toInt(),aAC.toInt(),aCCC.toInt(),aLTC.toInt());
+
+            qDebug() << MapWinCtrl::getInstance()->listOfFacility.size();
+            return "facility added!!";
+
+        }
+        return "-1";
+    }
+    return "-1";
+}
+
+QString XMLReader::addFacility(int anId, QString aName, int aX, int aY, int anACbed, int aCCCbed, int aLTCBed, int areaID){
+
+    QString responseString;
+    QString facilityID;
+    QString x;
+    QString y;
+    QString AC;
+    QString CCC;
+    QString LTC;
+    QString aAreaID;
+
+    facilityID.setNum(anId);
+    x.setNum(aX);
+    y.setNum(aY);
+    AC.setNum(anACbed);
+    CCC.setNum(aCCCbed);
+    LTC.setNum(aLTCBed);
+    aAreaID.setNum(areaID);
+
+
+    responseString.append(this->xmlHeader);
+    responseString.append("<Add remote=\"false\">");
+    responseString.append("<Area ID =\"" + aAreaID + "\">");
+
+    responseString.append("<Facility ID=\"" + facilityID + "\" name=\"" + aName + "\" coordinateX=\"" + x + "\" " + "coordinateY=\"" + y + "\" " + "AC=\"" + AC + "\" " + "CCC=\"" + CCC + "\" " + "LTC=\"" + LTC + "\"/>");
+    responseString.append("</Area>");
+    responseString.append("</Add>");
+    return responseString;
+}
 
 QString XMLReader::readAddorDeleteToFacility(QString aRequest, QString addOrDelete){
     QDomDocument doc("xmldocument");
@@ -254,15 +354,18 @@ QString XMLReader::readAddorDeleteToFacility(QString aRequest, QString addOrDele
                                         QString dateAdded = patientsElement.attribute("dateAdded");
                                         QString reqCare = patientsElement.attribute("reqCare");
                                         QString occCare = patientsElement.attribute("occCare");
+                                                                                if (dateAdmitted == ""){dateAdmitted = "''";};
+
+
 
                                         if (addOrDelete =="Add")
                                         {
                                             qDebug() <<"lol";
-                                            AssignHospitalController::getInstance()->setXmlNewPatient(healthCardNumber,firstName,lastName,dateAdmitted,dateAdded, reqCare,occCare,facilityID);
+                                            AssignHospitalController::getInstance()->setXmlNewPatient(healthCardNumber,firstName,lastName,dateAdded, dateAdmitted, reqCare,occCare,facilityID);
                                         }
                                         else if(addOrDelete =="Delete")
                                         {
-                                            AssignHospitalController::getInstance()->setXmlRemovePatient(healthCardNumber,firstName,lastName,dateAdmitted,dateAdded, reqCare,occCare,facilityID);
+                                            AssignHospitalController::getInstance()->setXmlRemovePatient(healthCardNumber,firstName,lastName, dateAdded ,dateAdmitted, reqCare,occCare,facilityID);
                                         }
 
                                         //probably want to make this a "patient" object and then add or delete it to the db
@@ -546,15 +649,25 @@ QString XMLReader::reportWaitingList(QString aRequest){
                 reportEndDate = m.attribute("endDate");
                 n = n.firstChild();
                 m = n.toElement();
-                if(m.tagName() == "WaitingListRecord") {
+
+                if (m.tagName() == "Area"){
                     n = n.firstChild();
                     m = n.toElement();
-                        if(m.tagName() == "Patient") {
-                            dateAdded = m.attribute("dateAdded");
-                            dateAdmitted = m.attribute("dateAdmitted");
-                            QString response = buildWaitingListResponse(requestID,reportStartDate,reportEndDate);
-                            return response;
-                        }
+                    if(m.tagName() == "WaitingListRecord") {
+                        n = n.firstChild();
+                        m = n.toElement();
+                            if(m.tagName() == "Patient") {
+                                dateAdded = m.attribute("dateAdded");
+                                dateAdmitted = m.attribute("dateAdmitted");
+
+
+
+                                QString response = buildWaitingListResponse(requestID,reportStartDate,reportEndDate);
+                                return response;
+                            }
+                    }
+
+
                 }
 
             }
@@ -629,6 +742,7 @@ QString XMLReader::reportWaitingListSize(QString aRequest){
        QString dateAdmitted;
        QString reportStartDate;
        QString reportEndDate;
+        QString areaID="0";
 
 
         //request and responses
@@ -642,9 +756,14 @@ QString XMLReader::reportWaitingListSize(QString aRequest){
                 reportEndDate = m.attribute("endDate");
                 n = n.firstChild();
                 m = n.toElement();
-                if(m.tagName() == "WaitingListRecord") {
-                            return buildWaitingListSizeResponse(requestID,reportStartDate,reportEndDate);
-                            qDebug() << requestID << dateAdded << dateAdmitted << "Report Start Date: " << reportStartDate << "Report End date: " << reportEndDate ;
+                if (m.tagName() == "Area"){
+                    areaID = m.attribute("ID");
+                    n = n.firstChild();
+                    m = n.toElement();
+                    if(m.tagName() == "WaitingListRecord") {
+                                return buildWaitingListSizeResponse(requestID,reportStartDate,reportEndDate,areaID);
+                                //qDebug() << requestID << dateAdded << dateAdmitted << "Report Start Date: " << reportStartDate << "Report End date: " << reportEndDate ;
+                    }
                 }
 
             }
@@ -705,7 +824,10 @@ QString XMLReader::buildResponseDate(QString startdate, QString enddate){
 QString XMLReader::buildFacilityRecord(QString AC, QString CCC, QString LTC, QString date){
     QString returnString;
     returnString.append("<FacilityRecord dateTime=\"" + date + "\">");
-    returnString.append("<Facility ID=\"7\"/>");
+    int afacilityID = MapWinCtrl::getInstance()->getId();
+    QString facilityID;
+    facilityID.setNum(afacilityID);
+    returnString.append("<Facility ID=\"" + facilityID + "\"/>");
 
     QSqlQuery query;
     query.exec("SELECT SUM(AC), SUM(CCC), SUM(LTC) FROM bed_hist WHERE date <= '" + date.left(10) + "';");
@@ -769,13 +891,23 @@ QString XMLReader::buildWaitingListResponse(QString requestID, QString reportSta
     responseString.append(this->xmlHeader);
     responseString.append(this->buildResponseID(requestID));
     responseString.append(this->buildResponseDate(reportStartDate, reportEndDate));
+
+    QSqlQuery queryFacility;
+    queryFacility.exec("SELECT areaID FROM facility");
+    queryFacility.first();
+
+    QString areaID = queryFacility.value(0).toString();
+    responseString.append("<Area ID=\"" + areaID +"\">");
+
+
     responseString.append("<WaitingListRecord>");
 
          QSqlQuery query;
          QString queryText;
 
          queryText.append("SELECT dte_added, dte_admitted FROM waitingList ");
-         queryText.append("WHERE dte_admitted >=  '" + reportStartDate.left(10) + "' and dte_admitted <= '" + reportEndDate.left(10) +  "';");
+         queryText.append("WHERE dte_admitted >=  '" + reportStartDate.left(10) + "' and dte_admitted <= '" + reportEndDate.left(10) +  "' and not(dte_admitted == '') and not(dte_added == '');");
+
 
          query.exec(queryText);
 
@@ -792,6 +924,7 @@ QString XMLReader::buildWaitingListResponse(QString requestID, QString reportSta
           }
 
               responseString.append("</WaitingListRecord>");
+                                responseString.append("</Area>");
               responseString.append("</Report>");
               responseString.append("</Response>");
 
@@ -804,12 +937,16 @@ QString XMLReader::buildWaitingListRecord(QString dte_added, QString dte_admitte
     return record;
 }
 
-QString XMLReader::buildWaitingListSizeResponse(QString requestID, QString reportStartDate, QString reportEndDate)
-{
+
+QString XMLReader::buildWaitingListSizeResponse(QString requestID, QString reportStartDate, QString reportEndDate, QString areaID){
+
     QString responseString;
     responseString.append(this->xmlHeader);
     responseString.append(this->buildResponseID(requestID));
     responseString.append(this->buildResponseDate(reportStartDate, reportEndDate));
+
+    responseString.append("<Area ID=\"" + areaID +"\">");
+
     responseString.append(buildWaitingListSizeRecord(reportStartDate));
 
 
@@ -832,6 +969,7 @@ QString XMLReader::buildWaitingListSizeResponse(QString requestID, QString repor
           responseString.append("<" + wlString + " dateTime=\"" + date + "\" listSize=\"" + listSize + "\" />");
       }
 
+                        responseString.append("</Area>");
           responseString.append("</Report>");
           responseString.append("</Response>");
 
@@ -962,6 +1100,7 @@ QString XMLReader::buildFacilityMismatchRecord(QString AC, QString CCC, QString 
 {
     QString returnString;
     returnString.append("<FacilityRecord dateTime=\"" + startDate + "\">");
+        returnString.append("<Facility ID=\"7\"/>"); //this should not be hard codded
 
 
     QSqlQuery query;
@@ -1105,7 +1244,17 @@ QString XMLReader::requestWaitingListSize(QString requestID, QString startDate, 
     request.append(this->xmlHeader);
     request.append(this->buildRequestID(requestID));
     request.append(this->buildResponseDate(startDate,endDate));
+
+    QSqlQuery queryFacility;
+    queryFacility.exec("SELECT areaID FROM facility");
+    queryFacility.first();
+
+    QString areaID = queryFacility.value(0).toString();
+    request.append("<Area ID=\"" + areaID +"\">");
+
     request.append("<WaitingListRecord listSize=\"0\"/>");
+
+    request.append("</Area>");
     request.append("</Report>");
     request.append("</Request>");
     return request;
@@ -1117,9 +1266,18 @@ QString XMLReader::requestWaitTimes(QString requestID, QString startDate, QStrin
     request.append(this->xmlHeader);
     request.append(this->buildRequestID(requestID));
     request.append(this->buildResponseDate(startDate,endDate));
+
+    QSqlQuery queryFacility;
+    queryFacility.exec("SELECT areaID FROM facility");
+    queryFacility.first();
+
+    QString areaID = queryFacility.value(0).toString();
+    request.append("<Area ID=\"" + areaID +"\">");
+
     request.append("<WaitingListRecord>");
     request.append("<Patient dateAdded=\"0\" dateAdmitted=\"0\"/>");
     request.append("</WaitingListRecord>");
+     request.append("</Area>");
     request.append("</Report>");
     request.append("</Request>");
     return request;
@@ -1280,6 +1438,7 @@ QString XMLReader::readRequestAmountOfBedsSUM(QString xmlRequest){
                             frNode = n.firstChild();
                             frElement = frNode.toElement();
                             while(!frNode.isNull()) {
+
                                 if(frElement.tagName() == "Facility") {
                                     facilityID = frElement.attribute("ID");
                                 }
@@ -1346,10 +1505,13 @@ QString XMLReader::readRequestAmountOfBedsSUM(QString xmlRequest){
 
              qDebug() << "========================================================================================";
              qDebug() << "END OF BED";
+
+
       }
+
 }
 
-void XMLReader::readRequestMismatches(QString xmlRequest){
+QString XMLReader::readRequestMismatches(QString xmlRequest){
 
     QDomDocument doc("xmldocument");
     if (doc.setContent(xmlRequest)) {
@@ -1369,7 +1531,7 @@ void XMLReader::readRequestMismatches(QString xmlRequest){
        QString endDate;
        QString facilityID;
        QString startAmount;
-       QList<QString> dateAndTimes;
+       QList<int> dateAndTimes;
        QString differenceTime;
        QString differenceAmount;
 
@@ -1428,7 +1590,7 @@ void XMLReader::readRequestMismatches(QString xmlRequest){
                             frNode = frNode.nextSibling();
                             frElement = frElement.toElement();
                         }
-                        dateAndTimes.append(startDate + "," + startAmount);  //for now going to put in a useless date  because we dont get the facilityID in the protocol...
+                        dateAndTimes.append(startAmount.toInt());  //for now going to put in a useless date  because we dont get the facilityID in the protocol...
                     }
                     if(m.tagName() == "FacilityRecordDifference") {
                         differenceTime = m.attribute("dateTime");
@@ -1462,7 +1624,7 @@ void XMLReader::readRequestMismatches(QString xmlRequest){
                             }
                         }
 
-                        dateAndTimes.append(differenceTime + "," + differenceAmount);
+                        dateAndTimes.append(differenceAmount.toInt());
                     }
 
                     n = n.nextSibling();
@@ -1476,11 +1638,20 @@ void XMLReader::readRequestMismatches(QString xmlRequest){
        qDebug() << "START OF MISMATCHES";
        qDebug() << "========================================================================================";
 
-        QString str;
+       if(facilityID == ""){return "-1";}
+        int str=0;
+        int sum=0;
+
         foreach (str, dateAndTimes)
         {
-            qDebug() << str;
+            sum = sum + str;
+
         }
+
+        QString reposonse;
+        reposonse.setNum(sum);
+        return facilityID + "," + reposonse;
+
 
         qDebug() << "========================================================================================";
         qDebug() << "END OF MISMATCHES";
@@ -1489,7 +1660,7 @@ void XMLReader::readRequestMismatches(QString xmlRequest){
 
 }
 
-void XMLReader::readRequestWaitTimes(QString xmlRequest){
+QString XMLReader::readRequestWaitTimes(QString xmlRequest){
 
     QDomDocument doc("xmldocument");
     if (doc.setContent(xmlRequest)) {
@@ -1506,9 +1677,10 @@ void XMLReader::readRequestWaitTimes(QString xmlRequest){
        QString dateAdmitted;
        QString reportStartDate;
        QString reportEndDate;
-       QList<QString> dateAndTime;
+       QList<int> dateAndTime;
+                QString areaID;
 
-        //request and responses
+         //request and responses
         if(type == "Response") {
             QDomNode n = root.firstChild();
             QDomElement m = n.toElement();
@@ -1519,18 +1691,35 @@ void XMLReader::readRequestWaitTimes(QString xmlRequest){
                 reportEndDate = m.attribute("endDate");
                 n = n.firstChild();
                 m = n.toElement();
-                if(m.tagName() == "WaitingListRecord") {
+                if(m.tagName() == "Area"){
+                    areaID = m.attribute("ID");
                     n = n.firstChild();
                     m = n.toElement();
-                        while(!n.isNull()) {
-                            if(m.tagName() == "Patient") {
-                                dateAdded = m.attribute("dateAdded");
-                                dateAdmitted = m.attribute("dateAdmitted");
-                                dateAndTime.append(dateAdded + "," + dateAdmitted);
+                    if(m.tagName() == "WaitingListRecord") {
+                        n = n.firstChild();
+                        m = n.toElement();
+                            while(!n.isNull()) {
+                                if(m.tagName() == "Patient") {
+                                    dateAdded = m.attribute("dateAdded");
+                                    dateAdmitted = m.attribute("dateAdmitted");
+
+                                    QDateTime aDateAdded = QDateTime::fromString(dateAdded,"yyyy-MM-dThh:mm:ss");
+                                    QDateTime adateAdmitted = QDateTime::fromString(dateAdmitted,"yyyy-MM-dThh:mm:ss");
+
+                                    int qwerty = (((adateAdmitted.toTime_t() - aDateAdded.toTime_t()) / 60) / 60) / 24; //days
+                                    qDebug() << qwerty;
+
+                                    dateAndTime.append(qwerty);
+                                }
+                                n = n.nextSibling();
+                                m = n.toElement();
+
+
                             }
-                            n = n.nextSibling();
-                            m = n.toElement();
-                        }
+                    }
+
+
+
                 }
 
             }
@@ -1539,20 +1728,33 @@ void XMLReader::readRequestWaitTimes(QString xmlRequest){
         qDebug() << "START OF WAITTIMES";
         qDebug() << "========================================================================================";
 
-         QString str;
+
+                int str;
+         int count = dateAndTime.count();
+         int sum =0;
+
          foreach (str, dateAndTime)
          {
-             qDebug() << str;
+            sum = sum + str;
+
          }
+         sum = sum / count;
+
+         QString strSum;
+         strSum.setNum(sum);
+         return areaID + "," + strSum;
 
          qDebug() << "========================================================================================";
          qDebug() << "END OF WAITTIMES";
 
 
     }
+    return "-1";
 }
 
-void XMLReader::readRequestWaitingListSize(QString xmlRequest){
+
+
+QString XMLReader::readRequestWaitingListSize(QString xmlRequest){
 
 
     QDomDocument doc("xmldocument");
@@ -1571,12 +1773,13 @@ void XMLReader::readRequestWaitingListSize(QString xmlRequest){
        QString reportStartDate;
        QString reportEndDate;
        QString startingListSize;
-       QList<QString> dateAndTimes;
+       QList<int> dateAndTimes;
        QString differenceDate;
        QString differenceSize;
+       QString areaID="0";
 
 
-        //request and responses
+             //request and responses
         if(type == "Response") {
             QDomNode n = root.firstChild();
             QDomElement m = n.toElement();
@@ -1588,18 +1791,28 @@ void XMLReader::readRequestWaitingListSize(QString xmlRequest){
                 n = n.firstChild();
                 m = n.toElement();
 
-                while (!n.isNull() ){
-                    if(m.tagName() == "WaitingListRecord") {
-                        startingListSize = m.attribute("listSize");
-                        dateAndTimes.append(reportStartDate + "," + startingListSize);
-                    }
-                    if(m.tagName() == "WaitingListRecordDifference") {
-                        differenceDate = m.attribute("dateTime");
-                        differenceSize = m.attribute("listSize");
-                        dateAndTimes.append(differenceDate + "," + differenceSize);
-                    }
-                    n = n.nextSibling();
+                if(m.tagName() == "Area"){
+                    areaID = m.attribute("ID");
+                    n = n.firstChild();
                     m = n.toElement();
+                    while (!n.isNull() ){
+                        if(m.tagName() == "WaitingListRecord") {
+
+                            startingListSize = m.attribute("listSize");
+                            dateAndTimes.append(startingListSize.toInt());
+                        }
+
+                        if(m.tagName() == "WaitingListRecordDifference") {
+                            differenceDate = m.attribute("dateTime");
+                            differenceSize = m.attribute("listSize");
+                            dateAndTimes.append(differenceSize.toInt());
+                        }
+                        n = n.nextSibling();
+                        m = n.toElement();
+
+                    }
+
+
                 }
             }
         }
@@ -1607,11 +1820,19 @@ void XMLReader::readRequestWaitingListSize(QString xmlRequest){
         qDebug() << "START OF WAITINGLIST TIMES";
         qDebug() << "========================================================================================";
 
-         QString str;
+if(areaID == ""){return "-1";}
+         int str=0;
+         int sum=0;
+
          foreach (str, dateAndTimes)
          {
-             qDebug() << str;
+             sum = sum + str;
+
          }
+
+         QString reposonse;
+         reposonse.setNum(sum);
+         return areaID + "," + reposonse;
 
          qDebug() << "========================================================================================";
          qDebug() << "END OF WAITINGLIST TIMES";
@@ -1628,12 +1849,18 @@ QString XMLReader::rebuild(){
 
 
     QSqlQuery queryFacility;
-    queryFacility.exec("SELECT areaID, facilityID, haveWaitingList FROM facility");
+    queryFacility.exec("SELECT areaID, facilityID, haveWaitingList ,AC, CCC, LTC, coordinateX, coordinateY, name FROM facility");
     queryFacility.first();
 
     QString areaID = queryFacility.value(0).toString();
     QString facilityID = queryFacility.value(1).toString();
     QString haveWaitingList = queryFacility.value(2).toString();
+    QString aAC= queryFacility.value(3).toString();
+    QString aCCC= queryFacility.value(4).toString();
+    QString aLTC= queryFacility.value(5).toString();
+    QString x= queryFacility.value(6).toString();
+    QString y= queryFacility.value(7).toString();
+    QString name= queryFacility.value(8).toString();
 
     responseString.append("<Area ID=\"" + areaID +"\">");
 
@@ -1652,7 +1879,8 @@ QString XMLReader::rebuild(){
     QString healthCardNumber;
     QString dateAdded;
 
-    responseString.append("<Facility ID=\"" + facilityID + "\">");
+    responseString.append("<Facility ID=\"" + facilityID + "\" name=\"" + name + "\" coordinateX=\"" + x + "\" " + "coordinateY=\"" + y + "\" " + "AC=\"" + aAC + "\" " + "CCC=\"" + aCCC + "\" " + "LTC=\"" + aLTC + "\"/>");
+
     responseString.append("<PatientList>");
 
     while (queryPatient.next()) {
@@ -1706,10 +1934,25 @@ void XMLReader::readRebuild(QString rebuildRequest){
         QDomNode n = root.firstChild();
         QDomElement m = n.toElement();
 
+  QList<Patient*> aListOfPatients;
+        QList<Patient*> WLPatients;
+
         QString remote;
+
+        //////facility Variables//////
         QString facilityID;
+        QString facilityName;
+        QString x = "0";
+        QString y= "0";
+        QString aAC= "0";
+        QString aCCC= "0";
+        QString aLTC= "0";
+        //////////////////////////////
+
         bool hasWaitingList;
         remote = root.attribute("remote");
+
+        //Facility * aFacility = new Facility();
 
         QString areaID;
         while (!n.isNull() ){
@@ -1728,10 +1971,21 @@ void XMLReader::readRebuild(QString rebuildRequest){
                                     QString firstName = patientListElement.attribute("firstName");
                                     QString lastName = patientListElement.attribute("lastName");
                                     QString healthCardNumber = patientListElement.attribute("healthCardNumber");
-                                    QString dateAdmitted = patientListElement.attribute("dateAdded");
+                                     QString dateAdmitted = patientListElement.attribute("dateAdmitted");
+
+
+                                    QString dateAdded = patientListElement.attribute("dateAdded");
+                                    QString reqCare = patientListElement.attribute("reqCare");
+                                    QString occCare = patientListElement.attribute("occCare");
 
                                     //probably want to make this a "patient" object and then add it to the db
-                                    qDebug() << firstName << lastName << healthCardNumber << dateAdmitted << "areaID" << areaID;
+                                   // qDebug() << firstName << lastName << healthCardNumber << dateAdmitted << dateAdded << reqCare << occCare << "areaID" << areaID;
+
+                                    QDateTime aDateAdded = QDateTime::fromString(dateAdded,"yyyy-MM-dThh:mm:ss");
+                                    QDateTime aDateAdmitted = QDateTime::fromString(dateAdmitted,"yyyy-MM-dThh:mm:ss");
+                                    Patient * aPatient = new Patient(healthCardNumber,firstName,lastName,aDateAdmitted,aDateAdded,reqCare.toInt(),occCare.toInt());
+                                    WLPatients.append(aPatient);
+
 
                                     //add patient to db
                                      patientListNode = patientListNode.nextSibling();
@@ -1742,6 +1996,14 @@ void XMLReader::readRebuild(QString rebuildRequest){
                     }
                     if(waitinglistElement.tagName() == "Facility") {
                         facilityID = waitinglistElement.attribute("ID");
+                                                facilityName = waitinglistElement.attribute("name");
+                        x = waitinglistElement.attribute("coordinateX");
+                        y = waitinglistElement.attribute("coordinateY");
+                        aAC = waitinglistElement.attribute("AC");
+                        aCCC = waitinglistElement.attribute("CCC");
+                        aLTC = waitinglistElement.attribute("LTC");
+
+
                             QDomNode patientListNode = waitinglistElement.firstChild();
                             QDomElement patientListElement = patientListNode.toElement();
                             if(patientListElement.tagName() == "PatientList") {
@@ -1752,14 +2014,23 @@ void XMLReader::readRebuild(QString rebuildRequest){
                                         QString firstName = patientsElement.attribute("firstName");
                                         QString lastName = patientsElement.attribute("lastName");
                                         QString healthCardNumber = patientsElement.attribute("healthCardNumber");
-                                        QString dateAdded = patientsElement.attribute("dateAdded");
+                                        QString dateAdmitted = patientsElement.attribute("dateAdmitted");
 
+
+                                                                                QString dateAdded = patientListElement.attribute("dateAdded");
+                                        QString reqCare = patientListElement.attribute("reqCare");
+                                        QString occCare = patientListElement.attribute("occCare");
 
                                         //probably want to make this a "patient" object and then add or delete it to the db
 
                                         if (hasWaitingList == true){
                                             //add facility to special array which holds all the facilitys that have the waitinglist.............
                                         }
+                                        QDateTime aDateAdded = QDateTime::fromString(dateAdded,"yyyy-MM-dThh:mm:ss");
+                                        QDateTime aDateAdmitted = QDateTime::fromString(dateAdmitted,"yyyy-MM-dThh:mm:ss");
+                                        //qDebug() << firstName << lastName << healthCardNumber << dateAdded << dateAdded << reqCare << occCare << "areaID:" << areaID << "facilityID" << facilityID;
+                                        Patient * aPatient = new Patient(healthCardNumber,firstName,lastName,aDateAdmitted,aDateAdded,reqCare.toInt(),occCare.toInt());
+                                        aListOfPatients.append(aPatient);
 
                                         qDebug() << firstName << lastName << healthCardNumber << dateAdded << "areaID:" << areaID << "facilityID" << facilityID;
 
@@ -1781,6 +2052,38 @@ void XMLReader::readRebuild(QString rebuildRequest){
             m = n.toElement();
         }
 
+ if(!(facilityID == "")){
+
+            //Set value into the controller from the UI
+
+           // Facility * aFacility = new Facility(facilityID.toInt(),facilityName,x.toInt(),y.toInt(),aAC.toInt(),aCCC.toInt(),aLTC.toInt());
+
+                        qDebug() << MapWinCtrl::getInstance()->listOfFacility.size();
+
+                        MapWinCtrl::getInstance()->addToFacilityList(facilityID.toInt(),facilityName,x.toInt(),y.toInt(),aAC.toInt(),aCCC.toInt(),aLTC.toInt());
+
+                        qDebug() << MapWinCtrl::getInstance()->listOfFacility.size();
+
+            //determineIcon();
+            //qDebug() << "AC before adToDb: " << AddFacCtrl::getInstance()->getAC();
+            //AddFacCtrl::getInstance()->addToDb();
+
+            if (hasWaitingList == true)
+                MapWinCtrl::getInstance()->setWlArray(areaID,facilityID);
+
+
+            Patient * str;
+            foreach (str, WLPatients){AddFacCtrl::getInstance()->facilityList->last()->addWaitingList(str);}
+
+            foreach (str, aListOfPatients){
+                if (str->getOccCare() == 0){AddFacCtrl::getInstance()->facilityList->last()->addPatientAcute(str);}
+                if (str->getOccCare() == 1){AddFacCtrl::getInstance()->facilityList->last()->addPatientComplex(str);}
+                if (str->getOccCare() == 2){AddFacCtrl::getInstance()->facilityList->last()->addPatientLTC(str);}
+            }
+
+        }
+
+
     }
 }
 
@@ -1793,6 +2096,7 @@ QString XMLReader::readRebuildRequest(QString rebuildRequest)
         QDomElement root = doc.documentElement();
         QDomNode n = root.firstChild();
         QDomElement m = n.toElement();
+
 
         QString remote;
         QString facilityID;
@@ -1820,7 +2124,14 @@ QString XMLReader::readRebuildRequest(QString rebuildRequest)
                                     QString healthCardNumber = patientListElement.attribute("healthCardNumber");
                                     QString dateAdmitted = patientListElement.attribute("dateAdded");
 
+                                                                        QString dateAdded = patientListElement.attribute("dateAdded");
+                                    QString reqCare = patientListElement.attribute("reqCare");
+                                    QString occCare = patientListElement.attribute("occCare");
+
                                     //probably want to make this a "patient" object and then add it to the db
+
+
+
                                     qDebug() << firstName << lastName << healthCardNumber << dateAdmitted << "areaID" << areaID;
 
                                     //add patient to db
@@ -1847,7 +2158,11 @@ QString XMLReader::readRebuildRequest(QString rebuildRequest)
                                         QString firstName = patientsElement.attribute("firstName");
                                         QString lastName = patientsElement.attribute("lastName");
                                         QString healthCardNumber = patientsElement.attribute("healthCardNumber");
-                                        QString dateAdded = patientsElement.attribute("dateAdded");
+                                        QString dateAdmitted = patientsElement.attribute("dateAdmitted");
+
+                                                                                QString dateAdded = patientListElement.attribute("dateAdded");
+                                        QString reqCare = patientListElement.attribute("reqCare");
+                                        QString occCare = patientListElement.attribute("occCare");
 
 
                                         //probably want to make this a "patient" object and then add or delete it to the db
@@ -1855,6 +2170,10 @@ QString XMLReader::readRebuildRequest(QString rebuildRequest)
                                         if (hasWaitingList == true){
                                             //add facility to special array which holds all the facilitys that have the waitinglist.............
                                         }
+                                                                                QDateTime aDateAdded = QDateTime::fromString(dateAdded,"yyyy-MM-dThh:mm:ss");
+                                        QDateTime aDateAdmitted = QDateTime::fromString(dateAdmitted,"yyyy-MM-dThh:mm:ss");
+
+
 
                                         qDebug() << firstName << lastName << healthCardNumber << dateAdded << "areaID:" << areaID << "facilityID" << facilityID;
 
@@ -1890,12 +2209,18 @@ QString XMLReader::buildRebuildResponse()
 
 
     QSqlQuery queryFacility;
-    queryFacility.exec("SELECT areaID, facilityID, haveWaitingList FROM facility");
+    queryFacility.exec("SELECT areaID, facilityID, haveWaitingList ,AC, CCC, LTC, coordinateX, coordinateY, name FROM facility");
     queryFacility.first();
 
     QString areaID = queryFacility.value(0).toString();
     QString facilityID = queryFacility.value(1).toString();
     QString haveWaitingList = queryFacility.value(2).toString();
+    QString aAC= queryFacility.value(3).toString();
+    QString aCCC= queryFacility.value(4).toString();
+    QString aLTC= queryFacility.value(5).toString();
+    QString x= queryFacility.value(6).toString();
+    QString y= queryFacility.value(7).toString();
+    QString name= queryFacility.value(8).toString();
 
     responseString.append("<Area ID=\"" + areaID +"\">");
 
@@ -1914,7 +2239,9 @@ QString XMLReader::buildRebuildResponse()
     QString healthCardNumber;
     QString dateAdded;
 
-    responseString.append("<Facility ID=\"" + facilityID + "\">");
+    responseString.append("<Facility ID=\"" + facilityID + "\" name=\"" + name + "\" coordinateX=\"" + x + "\" " + "coordinateY=\"" + y + "\" " + "AC=\"" + aAC + "\" " + "CCC=\"" + aCCC + "\" " + "LTC=\"" + x + "\"/>");
+
+
     responseString.append("<PatientList>");
 
     while (queryPatient.next()) {

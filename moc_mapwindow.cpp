@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mapwindow.h'
 **
-** Created: Mon Apr 4 10:28:54 2011
+** Created: Mon Apr 4 21:02:07 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MapWindow[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -35,7 +35,6 @@ static const uint qt_meta_data_MapWindow[] = {
       32,   10,   10,   10, 0x08,
       52,   10,   10,   10, 0x08,
       67,   10,   10,   10, 0x08,
-      81,   10,   10,   10, 0x08,
 
        0        // eod
 };
@@ -43,7 +42,7 @@ static const uint qt_meta_data_MapWindow[] = {
 static const char qt_meta_stringdata_MapWindow[] = {
     "MapWindow\0\0createUser_clicked()\0"
     "createFac_clicked()\0facilityView()\0"
-    "reportSetup()\0generateReport_clicked()\0"
+    "generateReport_clicked()\0"
 };
 
 const QMetaObject MapWindow::staticMetaObject = {
@@ -78,11 +77,10 @@ int MapWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 0: createUser_clicked(); break;
         case 1: createFac_clicked(); break;
         case 2: facilityView(); break;
-        case 3: reportSetup(); break;
-        case 4: generateReport_clicked(); break;
+        case 3: generateReport_clicked(); break;
         default: ;
         }
-        _id -= 5;
+        _id -= 4;
     }
     return _id;
 }

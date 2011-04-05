@@ -52,6 +52,7 @@ public:
     void invalid();
     QList<Facility*> listOfFacility;
     QList<Patient*> listOfPatient;
+    void addToFacilityList(int facilityID,QString facilityName,int x,int y,int aAC,int aCCC,int aLTC);
 
 
 private:

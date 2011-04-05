@@ -89,6 +89,10 @@ public:
 
 
     void setName(QString);
+    QList<Patient*> * getListAcute();
+    QList<Patient*> * getListComplex();
+    QList<Patient*> * getListLTC();
+
 
 
 

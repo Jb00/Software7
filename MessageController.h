@@ -41,6 +41,10 @@ public:
         void received(QString);
         QList<QString> setGetData(QList<QString>,QString,QString,QString,QDateTime,QDateTime);
         QList<QString> setgetMismatchOccLTC(QList<QString>,QDateTime,QDateTime,QString,QString);
+        QList<QString> setgetWLSize(QList<QString>,QDateTime,QDateTime);
+        QList<QString> setgetWLTime(QList<QString>,QDateTime,QDateTime);
+
+
 
 private slots:
    // void sendMessage();

@@ -26,9 +26,9 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
     void readRequestAmountOfBeds(QString xmlRequest);
-    void readRequestMismatches(QString xmlRequest);
-    void readRequestWaitTimes(QString xmlRequest);
-    void readRequestWaitingListSize(QString xmlRequest);
+    QString readRequestMismatches(QString xmlRequest);
+    QString readRequestWaitTimes(QString xmlRequest);
+    QString readRequestWaitingListSize(QString xmlRequest);
 
     QString readRequestAmountOfBedsSUM(QString xmlRequest);
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -59,12 +59,15 @@ public:
     QString addOrDeleteToFacility(QString areaID,QString facilityID,QString firstName,QString lastName,QString healthCardNumber,QString dateAdded,QString reqCare,QString occCare, QString AddOrDelete, bool remote);
     QString addOrDeleteBeds(QString areaID, QString typeOfBed,QString facilityID, int amount, bool remote, QString addOrDelete);
 
+    QString addFacility(int anId,QString aName, int aX,int aY,int anACbed,int aCCCbed,int aLTCBed, int areaID);
 private:
     QXmlStreamReader xml;
 
     //requests from other facilities
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
+    QString readAddRemoveFacility(QString aRequest, QString aType); //for the add facility functionality......
+
     QString readAddorDeleteToFacility(QString item, QString addOrDelete);
     QString readAddorDeleteToWaitingList(QString item, QString addOrDelete);
     QString readAddRemoveBeds(QString item, QString type);
@@ -87,7 +90,7 @@ private:
     QString buildWaitingListResponse(QString requestID,QString reportStartDate,QString reportEndDate);
     QString buildWaitingListRecord(QString dte_added, QString dte_admitted);
     QString buildWaitingListSizeRecord(QString date);
-    QString buildWaitingListSizeResponse(QString requestID, QString reportStartDate, QString reportEndDate);
+    QString buildWaitingListSizeResponse(QString requestID, QString reportStartDate, QString reportEndDate, QString areaID);
     QString buildBedMismatchReportResponse(QString requestID, QString CCC, QString AC, QString LTC,QString startDate,QString endDate, QString type);
     QString buildFacilityMismatchRecord(QString AC,QString  CCC, QString LTC,QString type, QString startDate);
     QString buildFacilityMismatchDifference(QString occCare,QString reqCare,QString datePlacedOnWaitingList,QString AC,QString CCC,QString LTC,QString date, QString type);

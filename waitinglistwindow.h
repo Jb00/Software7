@@ -3,15 +3,19 @@
 
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QDebug>
 
-//#include "addfacctrl.h"
-//#include "mapwinctrl.h"
+#include "waitingctrl.h"
+#include "genui.h"
+//#include "Patient.h" //WORKS FOR BART
+//#include "facilitywinctrl.h"
+
 
 namespace Ui {
     class WaitingListWindow;
 }
 
-class WaitingListWindow : public QMainWindow
+class WaitingListWindow : public QMainWindow, public genUI
 {
     Q_OBJECT
 
@@ -21,8 +25,13 @@ public:
 
     void keyPressEvent(QKeyEvent * event);
 
+
+    void setScheme();
+
 private:
     Ui::WaitingListWindow *ui;
+
+  Patient *aPatient;
 
 private slots:
     void cancelBtn_clicked();

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'genreportwin.ui'
 **
-** Created: Mon Apr 4 12:03:23 2011
+** Created: Mon Apr 4 21:16:59 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -63,7 +63,7 @@ public:
     QRadioButton *occRadio;
     QWidget *layoutWidget3;
     QGridLayout *gridLayout_4;
-    QCheckBox *numAcuteInCCC;
+    QCheckBox *WLTime;
     QCheckBox *numCCCInAcute;
     QCheckBox *numLTCInAcute;
     QCheckBox *numLTCInCCC;
@@ -123,7 +123,7 @@ public:
         facListWidget->setGeometry(QRect(20, 50, 201, 341));
         label_4 = new QLabel(frame_2);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(80, 10, 81, 20));
+        label_4->setGeometry(QRect(20, 10, 141, 20));
         frame_3 = new QFrame(centralwidget);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
         frame_3->setGeometry(QRect(260, 220, 231, 411));
@@ -199,10 +199,10 @@ public:
         gridLayout_4 = new QGridLayout(layoutWidget3);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         gridLayout_4->setContentsMargins(0, 0, 0, 0);
-        numAcuteInCCC = new QCheckBox(layoutWidget3);
-        numAcuteInCCC->setObjectName(QString::fromUtf8("numAcuteInCCC"));
+        WLTime = new QCheckBox(layoutWidget3);
+        WLTime->setObjectName(QString::fromUtf8("WLTime"));
 
-        gridLayout_4->addWidget(numAcuteInCCC, 0, 0, 1, 1);
+        gridLayout_4->addWidget(WLTime, 0, 0, 1, 1);
 
         numCCCInAcute = new QCheckBox(layoutWidget3);
         numCCCInAcute->setObjectName(QString::fromUtf8("numCCCInAcute"));
@@ -247,7 +247,7 @@ public:
         label_3->setText(QApplication::translate("GenReportWin", "End Date (yyyy/mm/dd):", 0, QApplication::UnicodeUTF8));
         startDate->setText(QApplication::translate("GenReportWin", "yyyy-mm-dd", 0, QApplication::UnicodeUTF8));
         endDate->setText(QApplication::translate("GenReportWin", "yyyy-mm-dd", 0, QApplication::UnicodeUTF8));
-        label_4->setText(QApplication::translate("GenReportWin", "Facility List", 0, QApplication::UnicodeUTF8));
+        label_4->setText(QApplication::translate("GenReportWin", "Id                 Facility", 0, QApplication::UnicodeUTF8));
         label_5->setText(QApplication::translate("GenReportWin", "Report Details", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("GenReportWin", "Bed Information", 0, QApplication::UnicodeUTF8));
         label_7->setText(QApplication::translate("GenReportWin", "Patient Information", 0, QApplication::UnicodeUTF8));
@@ -257,7 +257,7 @@ public:
         ltcCheck->setText(QApplication::translate("GenReportWin", "LTC", 0, QApplication::UnicodeUTF8));
         totalRadio->setText(QApplication::translate("GenReportWin", "Total", 0, QApplication::UnicodeUTF8));
         occRadio->setText(QApplication::translate("GenReportWin", "Occupied", 0, QApplication::UnicodeUTF8));
-        numAcuteInCCC->setText(QApplication::translate("GenReportWin", "Number Acute in CCC", 0, QApplication::UnicodeUTF8));
+        WLTime->setText(QApplication::translate("GenReportWin", "Waiting TIme WL", 0, QApplication::UnicodeUTF8));
         numCCCInAcute->setText(QApplication::translate("GenReportWin", "Number CCC in Acute", 0, QApplication::UnicodeUTF8));
         numLTCInAcute->setText(QApplication::translate("GenReportWin", "Number LTC in Acute", 0, QApplication::UnicodeUTF8));
         numLTCInCCC->setText(QApplication::translate("GenReportWin", "Number LTC in CCC", 0, QApplication::UnicodeUTF8));

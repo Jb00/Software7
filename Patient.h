@@ -32,18 +32,23 @@ private :
 
 public:
     Patient(QString,QString,QString,QDateTime,QDateTime,int,int);
+    Patient();
     ~Patient();
 
     void setNeeded(int);
     void setFacility(QString);
     void setBed(int);
     void setdateWL(QDateTime);
+    void setOcc(int);
     int gethealthCard();
     QString getFName();
     QString getLName();
     QDateTime getAdmission();
     QDateTime getDateWL();
     int getNeeded(); //Needed Care
+    int getOccCare();
+    int getOcc();
+    QString getFacility();
 
 };
 #endif // PATIENT_H

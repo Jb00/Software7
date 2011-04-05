@@ -21,3 +21,26 @@ void FacilityWinCtrl::goToWaiting(){
 
     genCTRL::center(*waitingWin);
 }
+
+void FacilityWinCtrl::setType(QString type){aType = type;}
+QString FacilityWinCtrl::getType(){return aType;}
+
+void FacilityWinCtrl::goToNewPatient(Facility *aFacility){
+
+    newPatientWin = new NewPatientWindow();
+    newPatientWin->show();
+    newPatientWin->currentFacility(aFacility);
+
+    genCTRL::center(*newPatientWin);
+}
+
+
+
+
+
+
+
+
+
+
+

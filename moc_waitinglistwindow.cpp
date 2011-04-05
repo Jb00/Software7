@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'waitinglistwindow.h'
 **
-** Created: Mon Apr 4 00:50:03 2011
+** Created: Mon Apr 4 21:00:42 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -64,6 +64,8 @@ void *WaitingListWindow::qt_metacast(const char *_clname)
     if (!_clname) return 0;
     if (!strcmp(_clname, qt_meta_stringdata_WaitingListWindow))
         return static_cast<void*>(const_cast< WaitingListWindow*>(this));
+    if (!strcmp(_clname, "genUI"))
+        return static_cast< genUI*>(const_cast< WaitingListWindow*>(this));
     return QMainWindow::qt_metacast(_clname);
 }
 

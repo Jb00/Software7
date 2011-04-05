@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'facilitywindow.ui'
 **
-** Created: Mon Apr 4 00:49:20 2011
+** Created: Mon Apr 4 19:05:26 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -14,14 +14,15 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QFormLayout>
 #include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 #include <QtGui/QMainWindow>
 #include <QtGui/QPushButton>
 #include <QtGui/QRadioButton>
-#include <QtGui/QSpinBox>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
@@ -40,7 +41,7 @@ public:
     QRadioButton *complexRadio;
     QRadioButton *longRadio;
     QFrame *frame_4;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QGridLayout *gridLayout;
     QLabel *label_3;
     QLabel *occLbl;
@@ -49,40 +50,43 @@ public:
     QLabel *label_4;
     QLabel *totalLbl;
     QFrame *frame_5;
-    QPushButton *okBtn;
-    QPushButton *cancelBtn;
-    QWidget *widget1;
+    QWidget *layoutWidget2;
     QGridLayout *gridLayout_2;
-    QLabel *label_26;
-    QSpinBox *addBedNum;
-    QWidget *widget2;
-    QGridLayout *gridLayout_3;
-    QLabel *label_27;
-    QSpinBox *addPatNum;
-    QWidget *layoutWidget1;
+    QLabel *label_5;
+    QLineEdit *addBedLine;
+    QPushButton *bedAddBtn;
+    QWidget *layoutWidget3;
     QVBoxLayout *verticalLayout_6;
     QFrame *frame_2;
     QLabel *label_7;
+    QWidget *layoutWidget4;
+    QFormLayout *formLayout;
     QLabel *label_8;
     QLabel *nameLbl;
-    QLabel *idLbl;
     QLabel *label_11;
-    QLabel *xLbl;
+    QLabel *idLbl;
     QLabel *label_13;
+    QLabel *xLbl;
     QLabel *label_14;
     QLabel *yLbl;
+    QLabel *crossImg;
+    QFrame *frame_6;
+    QWidget *layoutWidget5;
+    QGridLayout *gridLayout_3;
     QPushButton *waitingBtn;
+    QPushButton *patientAddBtn;
+    QPushButton *cancelBtn;
 
     void setupUi(QMainWindow *FacilityWindow)
     {
         if (FacilityWindow->objectName().isEmpty())
             FacilityWindow->setObjectName(QString::fromUtf8("FacilityWindow"));
-        FacilityWindow->resize(420, 541);
+        FacilityWindow->resize(420, 522);
         centralWidget = new QWidget(FacilityWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         frame = new QFrame(centralWidget);
         frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setGeometry(QRect(10, 230, 401, 301));
+        frame->setGeometry(QRect(10, 270, 401, 241));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         label = new QLabel(frame);
@@ -122,134 +126,167 @@ public:
         frame_4->setGeometry(QRect(170, 30, 221, 131));
         frame_4->setFrameShape(QFrame::StyledPanel);
         frame_4->setFrameShadow(QFrame::Raised);
-        widget = new QWidget(frame_4);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(10, 10, 201, 111));
-        gridLayout = new QGridLayout(widget);
+        layoutWidget1 = new QWidget(frame_4);
+        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(10, 10, 201, 111));
+        gridLayout = new QGridLayout(layoutWidget1);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
-        label_3 = new QLabel(widget);
+        label_3 = new QLabel(layoutWidget1);
         label_3->setObjectName(QString::fromUtf8("label_3"));
 
         gridLayout->addWidget(label_3, 0, 0, 1, 1);
 
-        occLbl = new QLabel(widget);
+        occLbl = new QLabel(layoutWidget1);
         occLbl->setObjectName(QString::fromUtf8("occLbl"));
 
         gridLayout->addWidget(occLbl, 0, 1, 1, 1);
 
-        label_2 = new QLabel(widget);
+        label_2 = new QLabel(layoutWidget1);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
-        availLbl = new QLabel(widget);
+        availLbl = new QLabel(layoutWidget1);
         availLbl->setObjectName(QString::fromUtf8("availLbl"));
 
         gridLayout->addWidget(availLbl, 1, 1, 1, 1);
 
-        label_4 = new QLabel(widget);
+        label_4 = new QLabel(layoutWidget1);
         label_4->setObjectName(QString::fromUtf8("label_4"));
 
         gridLayout->addWidget(label_4, 2, 0, 1, 1);
 
-        totalLbl = new QLabel(widget);
+        totalLbl = new QLabel(layoutWidget1);
         totalLbl->setObjectName(QString::fromUtf8("totalLbl"));
 
         gridLayout->addWidget(totalLbl, 2, 1, 1, 1);
 
         frame_5 = new QFrame(frame);
         frame_5->setObjectName(QString::fromUtf8("frame_5"));
-        frame_5->setGeometry(QRect(10, 160, 381, 131));
+        frame_5->setGeometry(QRect(10, 160, 381, 71));
         frame_5->setFrameShape(QFrame::StyledPanel);
         frame_5->setFrameShadow(QFrame::Raised);
-        okBtn = new QPushButton(frame_5);
-        okBtn->setObjectName(QString::fromUtf8("okBtn"));
-        okBtn->setGeometry(QRect(260, 30, 98, 27));
-        cancelBtn = new QPushButton(frame_5);
-        cancelBtn->setObjectName(QString::fromUtf8("cancelBtn"));
-        cancelBtn->setGeometry(QRect(260, 70, 98, 27));
-        widget1 = new QWidget(frame_5);
-        widget1->setObjectName(QString::fromUtf8("widget1"));
-        widget1->setGeometry(QRect(91, 30, 142, 29));
-        gridLayout_2 = new QGridLayout(widget1);
+        layoutWidget2 = new QWidget(frame_5);
+        layoutWidget2->setObjectName(QString::fromUtf8("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(10, 20, 361, 29));
+        gridLayout_2 = new QGridLayout(layoutWidget2);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setContentsMargins(0, 0, 0, 0);
-        label_26 = new QLabel(widget1);
-        label_26->setObjectName(QString::fromUtf8("label_26"));
+        label_5 = new QLabel(layoutWidget2);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
 
-        gridLayout_2->addWidget(label_26, 0, 0, 1, 1);
+        gridLayout_2->addWidget(label_5, 0, 0, 1, 1);
 
-        addBedNum = new QSpinBox(widget1);
-        addBedNum->setObjectName(QString::fromUtf8("addBedNum"));
+        addBedLine = new QLineEdit(layoutWidget2);
+        addBedLine->setObjectName(QString::fromUtf8("addBedLine"));
 
-        gridLayout_2->addWidget(addBedNum, 0, 1, 1, 1);
+        gridLayout_2->addWidget(addBedLine, 0, 1, 1, 1);
 
-        widget2 = new QWidget(frame_5);
-        widget2->setObjectName(QString::fromUtf8("widget2"));
-        widget2->setGeometry(QRect(0, 70, 231, 29));
-        gridLayout_3 = new QGridLayout(widget2);
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        gridLayout_3->setContentsMargins(0, 0, 0, 0);
-        label_27 = new QLabel(widget2);
-        label_27->setObjectName(QString::fromUtf8("label_27"));
+        bedAddBtn = new QPushButton(layoutWidget2);
+        bedAddBtn->setObjectName(QString::fromUtf8("bedAddBtn"));
 
-        gridLayout_3->addWidget(label_27, 0, 0, 1, 1);
+        gridLayout_2->addWidget(bedAddBtn, 0, 2, 1, 1);
 
-        addPatNum = new QSpinBox(widget2);
-        addPatNum->setObjectName(QString::fromUtf8("addPatNum"));
-
-        gridLayout_3->addWidget(addPatNum, 0, 1, 1, 1);
-
-        layoutWidget1 = new QWidget(centralWidget);
-        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(0, 0, 2, 2));
-        verticalLayout_6 = new QVBoxLayout(layoutWidget1);
+        layoutWidget3 = new QWidget(centralWidget);
+        layoutWidget3->setObjectName(QString::fromUtf8("layoutWidget3"));
+        layoutWidget3->setGeometry(QRect(0, 0, 2, 2));
+        verticalLayout_6 = new QVBoxLayout(layoutWidget3);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
         verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
         frame_2 = new QFrame(centralWidget);
         frame_2->setObjectName(QString::fromUtf8("frame_2"));
-        frame_2->setGeometry(QRect(80, 10, 261, 211));
+        frame_2->setGeometry(QRect(10, 90, 261, 171));
         frame_2->setFrameShape(QFrame::StyledPanel);
         frame_2->setFrameShadow(QFrame::Raised);
         label_7 = new QLabel(frame_2);
         label_7->setObjectName(QString::fromUtf8("label_7"));
-        label_7->setGeometry(QRect(60, 10, 141, 20));
-        label_8 = new QLabel(frame_2);
+        label_7->setGeometry(QRect(50, 10, 141, 20));
+        layoutWidget4 = new QWidget(frame_2);
+        layoutWidget4->setObjectName(QString::fromUtf8("layoutWidget4"));
+        layoutWidget4->setGeometry(QRect(10, 50, 231, 101));
+        formLayout = new QFormLayout(layoutWidget4);
+        formLayout->setSpacing(6);
+        formLayout->setContentsMargins(11, 11, 11, 11);
+        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        formLayout->setContentsMargins(0, 0, 0, 0);
+        label_8 = new QLabel(layoutWidget4);
         label_8->setObjectName(QString::fromUtf8("label_8"));
-        label_8->setGeometry(QRect(10, 60, 61, 17));
-        nameLbl = new QLabel(frame_2);
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, label_8);
+
+        nameLbl = new QLabel(layoutWidget4);
         nameLbl->setObjectName(QString::fromUtf8("nameLbl"));
-        nameLbl->setGeometry(QRect(80, 60, 171, 20));
-        idLbl = new QLabel(frame_2);
-        idLbl->setObjectName(QString::fromUtf8("idLbl"));
-        idLbl->setGeometry(QRect(80, 90, 171, 20));
-        label_11 = new QLabel(frame_2);
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, nameLbl);
+
+        label_11 = new QLabel(layoutWidget4);
         label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setGeometry(QRect(10, 90, 61, 17));
-        xLbl = new QLabel(frame_2);
-        xLbl->setObjectName(QString::fromUtf8("xLbl"));
-        xLbl->setGeometry(QRect(80, 120, 171, 20));
-        label_13 = new QLabel(frame_2);
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, label_11);
+
+        idLbl = new QLabel(layoutWidget4);
+        idLbl->setObjectName(QString::fromUtf8("idLbl"));
+
+        formLayout->setWidget(1, QFormLayout::FieldRole, idLbl);
+
+        label_13 = new QLabel(layoutWidget4);
         label_13->setObjectName(QString::fromUtf8("label_13"));
-        label_13->setGeometry(QRect(10, 120, 61, 17));
-        label_14 = new QLabel(frame_2);
+
+        formLayout->setWidget(2, QFormLayout::LabelRole, label_13);
+
+        xLbl = new QLabel(layoutWidget4);
+        xLbl->setObjectName(QString::fromUtf8("xLbl"));
+
+        formLayout->setWidget(2, QFormLayout::FieldRole, xLbl);
+
+        label_14 = new QLabel(layoutWidget4);
         label_14->setObjectName(QString::fromUtf8("label_14"));
-        label_14->setGeometry(QRect(10, 150, 61, 17));
-        yLbl = new QLabel(frame_2);
+
+        formLayout->setWidget(3, QFormLayout::LabelRole, label_14);
+
+        yLbl = new QLabel(layoutWidget4);
         yLbl->setObjectName(QString::fromUtf8("yLbl"));
-        yLbl->setGeometry(QRect(80, 150, 171, 20));
-        waitingBtn = new QPushButton(frame_2);
+
+        formLayout->setWidget(3, QFormLayout::FieldRole, yLbl);
+
+        crossImg = new QLabel(centralWidget);
+        crossImg->setObjectName(QString::fromUtf8("crossImg"));
+        crossImg->setGeometry(QRect(320, 10, 71, 71));
+        frame_6 = new QFrame(centralWidget);
+        frame_6->setObjectName(QString::fromUtf8("frame_6"));
+        frame_6->setGeometry(QRect(270, 90, 141, 171));
+        frame_6->setFrameShape(QFrame::StyledPanel);
+        frame_6->setFrameShadow(QFrame::Raised);
+        layoutWidget5 = new QWidget(frame_6);
+        layoutWidget5->setObjectName(QString::fromUtf8("layoutWidget5"));
+        layoutWidget5->setGeometry(QRect(12, 10, 121, 151));
+        gridLayout_3 = new QGridLayout(layoutWidget5);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        gridLayout_3->setContentsMargins(0, 0, 0, 0);
+        waitingBtn = new QPushButton(layoutWidget5);
         waitingBtn->setObjectName(QString::fromUtf8("waitingBtn"));
-        waitingBtn->setGeometry(QRect(80, 170, 98, 27));
+
+        gridLayout_3->addWidget(waitingBtn, 0, 0, 1, 1);
+
+        patientAddBtn = new QPushButton(layoutWidget5);
+        patientAddBtn->setObjectName(QString::fromUtf8("patientAddBtn"));
+
+        gridLayout_3->addWidget(patientAddBtn, 1, 0, 1, 1);
+
+        cancelBtn = new QPushButton(layoutWidget5);
+        cancelBtn->setObjectName(QString::fromUtf8("cancelBtn"));
+
+        gridLayout_3->addWidget(cancelBtn, 2, 0, 1, 1);
+
         FacilityWindow->setCentralWidget(centralWidget);
 
         retranslateUi(FacilityWindow);
@@ -270,20 +307,21 @@ public:
         availLbl->setText(QString());
         label_4->setText(QApplication::translate("FacilityWindow", "Total Beds", 0, QApplication::UnicodeUTF8));
         totalLbl->setText(QString());
-        okBtn->setText(QApplication::translate("FacilityWindow", "OK", 0, QApplication::UnicodeUTF8));
-        cancelBtn->setText(QApplication::translate("FacilityWindow", "Cancel", 0, QApplication::UnicodeUTF8));
-        label_26->setText(QApplication::translate("FacilityWindow", "Add Bed(s)", 0, QApplication::UnicodeUTF8));
-        label_27->setText(QApplication::translate("FacilityWindow", "Add Patient(s) to Bed(s)", 0, QApplication::UnicodeUTF8));
+        label_5->setText(QApplication::translate("FacilityWindow", "Number of Beds:", 0, QApplication::UnicodeUTF8));
+        bedAddBtn->setText(QApplication::translate("FacilityWindow", "Add Bed(s)", 0, QApplication::UnicodeUTF8));
         label_7->setText(QApplication::translate("FacilityWindow", "Facility Information", 0, QApplication::UnicodeUTF8));
         label_8->setText(QApplication::translate("FacilityWindow", "Name:", 0, QApplication::UnicodeUTF8));
         nameLbl->setText(QString());
-        idLbl->setText(QString());
         label_11->setText(QApplication::translate("FacilityWindow", "ID:", 0, QApplication::UnicodeUTF8));
-        xLbl->setText(QString());
+        idLbl->setText(QString());
         label_13->setText(QApplication::translate("FacilityWindow", "X coord.:", 0, QApplication::UnicodeUTF8));
+        xLbl->setText(QString());
         label_14->setText(QApplication::translate("FacilityWindow", "Y coord.:", 0, QApplication::UnicodeUTF8));
         yLbl->setText(QString());
-        waitingBtn->setText(QApplication::translate("FacilityWindow", "Waiting List", 0, QApplication::UnicodeUTF8));
+        crossImg->setText(QString());
+        waitingBtn->setText(QApplication::translate("FacilityWindow", "Search", 0, QApplication::UnicodeUTF8));
+        patientAddBtn->setText(QApplication::translate("FacilityWindow", "New Patient", 0, QApplication::UnicodeUTF8));
+        cancelBtn->setText(QApplication::translate("FacilityWindow", "Cancel", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

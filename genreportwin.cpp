@@ -17,7 +17,7 @@ GenReportWin::GenReportWin(QWidget *parent) :
     connect(ui->acuteCheck, SIGNAL(toggled(bool)), this, SLOT(bedInfoCheck_selected()));
     connect(ui->cccCheck, SIGNAL(toggled(bool)), this, SLOT(bedInfoCheck_selected()));
     connect(ui->ltcCheck, SIGNAL(toggled(bool)), this, SLOT(bedInfoCheck_selected()));
-    connect(ui->numAcuteInCCC, SIGNAL(toggled(bool)), this, SLOT(patientInfoCheck_selected()));
+    connect(ui->WLTime, SIGNAL(toggled(bool)), this, SLOT(patientInfoCheck_selected()));
     connect(ui->numCCCInAcute, SIGNAL(toggled(bool)), this, SLOT(patientInfoCheck_selected()));
     connect(ui->numLTCInAcute, SIGNAL(toggled(bool)), this, SLOT(patientInfoCheck_selected()));
     connect(ui->numLTCInCCC, SIGNAL(toggled(bool)), this, SLOT(patientInfoCheck_selected()));
@@ -33,7 +33,14 @@ void GenReportWin::setUpList(){
 
     for(int i = 0; i < MapWinCtrl::getInstance()->listOfFacility.size(); i++){
         QListWidgetItem *newItem = new QListWidgetItem;
-        newItem->setText(MapWinCtrl::getInstance()->listOfFacility.at(i)->getName());
+        QString list;
+        QString id;
+        id = id.setNum(MapWinCtrl::getInstance()->listOfFacility.at(i)->getId());
+        list.append(id);
+        list.append(",");
+        list.append(MapWinCtrl::getInstance()->listOfFacility.at(i)->getName());
+        qDebug() << list;
+        newItem->setText(list);
         ui->facListWidget->addItem(newItem);
         ui->facListWidget->setAutoScroll(true);
         ui->facListWidget->sortItems();
@@ -44,37 +51,82 @@ GenReportWin::~GenReportWin(){delete ui;}
 
 void GenReportWin::cancelBtn_clicked(){this->close();}
 
+
 void GenReportWin::genBtn_clicked()
 {
-    if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 0)
+
+
+    qDebug() << facilities;
+
+
+    if (ui->startDate->text().size() != 10 ||ui->endDate->text().size() != 10)
     {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"1","0","0");
+        qDebug() <<"USE CORRECT DATE";
     }
-    if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 0)
+    else
     {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"0","1","0");
-    }
-    if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 2)
-    {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"0","0","1");
-    }
-    if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 0)
-    {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"1","1","0");
-    }
-    if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 2)
-    {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"1","0","1");
-    }
-    if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 2)
-    {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"1","1","1");
-    }
-    if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 2)
-    {
-        GenReportCtrl::getInstance()->occRateAC(ui->startDate->text(),ui->endDate->text(),"0","1","1");
-    }
-    this->close();
+        QList<QListWidgetItem*> listName = ui->facListWidget->selectedItems();
+
+        QString facilities;
+
+        for (int i = 0;i< listName.size();i++)
+        {
+            facilities.append(listName.at(i)->text());
+            facilities.append(",");
+        }
+
+        //    qDebug() <<"works ??? " << facilities.at(0);
+
+        if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 0)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"1","0","0");
+        }
+        if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 0)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"0","1","0");
+        }
+        if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"0","0","1");
+        }
+        if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 0)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"1","1","0");
+        }
+        if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==0  && ui->ltcCheck->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"1","0","1");
+        }
+        if (ui->acuteCheck->checkState() == 2 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"1","1","1");
+        }
+        if (ui->acuteCheck->checkState() == 0 && ui->cccCheck->checkState() ==2  && ui->ltcCheck->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->occRateAC(facilities,ui->startDate->text(),ui->endDate->text(),"0","1","1");
+        }
+
+        if (ui->numLTCInCCC->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->mismatchCCCLTC(facilities,ui->startDate->text(),ui->endDate->text());
+        }
+
+        if (ui->numLTCInAcute->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->mismatchACLTC(facilities,ui->startDate->text(),ui->endDate->text());
+        }
+
+        if (ui->waitingCheck->checkState() == 2)
+        {
+            GenReportCtrl::getInstance()->sizeWL(facilities,ui->startDate->text(),ui->endDate->text());
+        }
+
+        if (ui->WLTime->checkState() == 2 )
+        {
+            GenReportCtrl::getInstance()->waitingTime(facilities,ui->startDate->text(),ui->endDate->text());
+        }
+  //  this->close();
+}
 
 }
 

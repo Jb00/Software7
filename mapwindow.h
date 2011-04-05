@@ -56,7 +56,7 @@ private slots:
     void createFac_clicked();
     //void logout_clicked();
     void facilityView();
-    void reportSetup();
+    //void reportSetup();
     void generateReport_clicked();
 };
 

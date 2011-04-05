@@ -12,6 +12,7 @@
 #include "AssignLTCController.h"
 #include "addfacctrl.h"
 
+
 namespace Ui {
     class FacilityWindow;
 }
@@ -26,7 +27,7 @@ public:
 
     void keyPressEvent(QKeyEvent * event);
     void setUI(Facility *);
-    //void setScheme();
+    void setScheme();
 
 private:
     Ui::FacilityWindow *ui;
@@ -42,7 +43,8 @@ private slots:
     void LTCSelected();
 
     void waitingBtn_clicked();
-    void okBtn_clicked();
+    void addBedBtn_clicked();
+    void addPatientBtn_clicked();
     void cancelBtn_clicked();
 
 };

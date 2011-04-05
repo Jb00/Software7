@@ -1,6 +1,19 @@
 
 #include "Patient.h"
 
+Patient::Patient(){
+
+    healthCardNum = -1;
+    fName = "";
+    lName = "";
+    //dateAdmitted = NULL;
+    //dateWL = NULL;
+    reqCare = -1;
+    occCare = -1;
+}
+
+
+
 Patient::Patient(QString aHealthCardNum,QString aFName,QString aLName,QDateTime aDateAdmitted,QDateTime aDateWL,int aReqCare,int anOccCare)
 {
     healthCardNum =aHealthCardNum.toInt();
@@ -12,7 +25,7 @@ Patient::Patient(QString aHealthCardNum,QString aFName,QString aLName,QDateTime 
     occCare = anOccCare;
 }
 
-
+int Patient::getOccCare(){return this->occCare;}
 
 void Patient::setNeeded(int aType)
 {
@@ -64,11 +77,12 @@ int Patient::getNeeded()
     return reqCare;
 }
 
-/*QString Patient::getFacility()
+QString Patient::getFacility()
 {
     return facilityName;
 }
 
+/*
 int Patient::getBed()
 {
     return bedNumber;

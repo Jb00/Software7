@@ -36,7 +36,7 @@ return facilitiesList;
 // Stay like this for now, but unless xml is enormous we'll use what was proposed ^^.
 
 
-void GenReportCtrl::occRateAC(QString start,QString end,QString AC,QString CCC,QString LTC)
+void GenReportCtrl::occRateAC(QString idFacilities,QString start,QString end,QString AC,QString CCC,QString LTC)
 {
     //Ask protocol
     //Get Answer
@@ -53,13 +53,29 @@ void GenReportCtrl::occRateAC(QString start,QString end,QString AC,QString CCC,Q
     QList<QString> listFacilityDemanded;
     QList<QString> listIdBed;
     QList<QString> listDivised; //To hold the split from the protocol
-    listFacilityDemanded.append("7");
+    QList<QString> listIdSend;
 
-    QDateTime aDateA = QDateTime::fromString(start,"yyyy-MM-d");
-//    QString aDateA =to.toString("yyyy-MM-dThh:mm:ss");
+
+
+    listFacilityDemanded.append(idFacilities.split(","));
+
+    for(int g =0;g<listFacilityDemanded.size() -1 ;g=g+2)
+    {
+        listIdSend.append(listFacilityDemanded.at(g));
+    }
+
+    for(int h =0;h<listIdSend.size();h++)
+    {
+        qDebug() <<"READ LINE"<< listIdSend.at(h);
+    }
+
+
+
+    QDateTime aDateA = QDateTime::fromString(start,"yyyy-MM-dd");
     qDebug() <<aDateA;
 
-    QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+    QDateTime aDateB = QDateTime::fromString(end,"yyyy-MM-dd");
+    qDebug() <<aDateB;
 
     listResponse = MessageController::getInstance()->setGetData(listFacilityDemanded,AC,CCC,LTC,aDateA,aDateB);
     //qDebug() <<XMLReader::getInstance()->requestAmountOfBeds(listFacilityDemanded,"1","1","1",aDateA,aDateB);
@@ -68,8 +84,6 @@ void GenReportCtrl::occRateAC(QString start,QString end,QString AC,QString CCC,Q
     {
          listIdBed.append(XMLReader::getInstance()->readRequestAmountOfBedsSUM(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
     }
-
- //   listIdBed <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     for (int k =0; k<listIdBed.size();k++)
     {
@@ -85,9 +99,6 @@ void GenReportCtrl::occRateAC(QString start,QString end,QString AC,QString CCC,Q
         listData.append(listDivised.at(z+1).toDouble()); //Set to double value
     }
 
-  /*  listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
-    listData.append(350);listData.append(175);listData.append(87);*/
-
     aHistogramReport = new Histogram();
     aHistogramReport->setWindowTitle("Histogram");
     aHistogramReport->setGeneralData(listId,listData); //Pass by reference
@@ -95,55 +106,92 @@ void GenReportCtrl::occRateAC(QString start,QString end,QString AC,QString CCC,Q
     center(*aHistogramReport);
 
 
-}
-
-void GenReportCtrl::occRateCCC()
-{
-    //Ask protocol
-    //Get Answer
-    //In this example, we will try with 3 facilities, so 3 answers from protocol
-    //Answer #1 for facility id = 1 : 350
-    //Answer #2 for facility id = 2 :200
-    //Answer #3 for facility id = 3 : 40
-    //Same than Mismatch but protocol will be different
-
-    //NOT TESTED but assumed it would be the same
-
-    listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
-    listData.append(350);listData.append(175);listData.append(87);
-
-    aHistogramReport = new Histogram();
-    aHistogramReport->setWindowTitle("Histogram");
-    aHistogramReport->setGeneralData(listId,listData); //Pass by reference
-    aHistogramReport->show();
-    center(*aHistogramReport);
-}
-
-void GenReportCtrl::occRateLTC()
-{
-    //Ask protocol
-    //Get Answer
-    //In this example, we will try with 3 facilities, so 3 answers from protocol
-    //Answer #1 for facility id = 1 : 350
-    //Answer #2 for facility id = 2 :200
-    //Answer #3 for facility id = 3 : 40
-    //Same than Mismatch but protocol will be different
-
-    //NOT TESTED but assumed it would be the same
-
-    listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
-    listData.append(350);listData.append(175);listData.append(87);
-
-    aHistogramReport = new Histogram();
-    aHistogramReport->setWindowTitle("Histogram");
-    aHistogramReport->setGeneralData(listId,listData); //Pass by reference
-    aHistogramReport->show();
-    center(*aHistogramReport);
 }
 
 
 //void GenReportCtrl::mismatchCCCLTC(QList<Facility *> *aFacilityList)
-void GenReportCtrl::mismatchCCCLTC()
+void GenReportCtrl::mismatchCCCLTC(QString idFacilities,QString start,QString end)
+{
+    //If we want our facility then use our data.
+    //And/or
+    //Ask protocol
+    //Get Answer
+    //In this example, we will try with 3 facilities, so 3 answers from protocol
+    //Answer #1 for facility id = 1 : 350
+    //Answer #2 for facility id = 2 :200
+    //Answer #3 for facility id = 3 : 40
+
+    //if (facilityWanted.constains(aFacilityList.first())
+        //listId.append(our); listData.append(ourData);
+
+ //   aFacilityList->first()->
+
+
+
+    QList<QString> listFacilityDemanded;
+    listFacilityDemanded.append("7");
+    QList<QString> listResponse;
+    QList<QString> listMismatch;
+    QList<QString> listDivised;
+    listId.clear();
+    listData.clear();
+    QList<QString> listIdSend;
+
+
+
+    listFacilityDemanded.append(idFacilities.split(","));
+
+    for(int g =0;g<listFacilityDemanded.size() -1 ;g=g+2)
+    {
+        listIdSend.append(listFacilityDemanded.at(g));
+    }
+
+    for(int h =0;h<listIdSend.size();h++)
+    {
+        qDebug() <<"READ LINE"<< listIdSend.at(h);
+    }
+
+    QDateTime aDateA = QDateTime::fromString(start,"yyyy-MM-dd");
+    qDebug() <<aDateA;
+
+    QDateTime aDateB = QDateTime::fromString(end,"yyyy-MM-dd");
+    qDebug() <<aDateB;
+
+    listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"CCC","LTC");
+
+    for (int i =0; i<listResponse.size();i++)
+    {
+        listMismatch.append(XMLReader::getInstance()->readRequestMismatches(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
+    }
+
+    listMismatch <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+ //   listIdBed <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    for (int k =0; k<listMismatch.size();k++)
+    {
+         listDivised.append(listMismatch.at(k).split(","));
+
+    }
+
+    //0,2,4 Even will be only the ID name
+    //1,3,5 Odd will be data
+    for (int z =0; z<listDivised.size();z=z+2)
+    {
+        listId.append(listDivised.at(z));
+        listData.append(listDivised.at(z+1).toDouble()); //Set to double value
+    }
+
+
+    aHistogramReport = new Histogram();
+    aHistogramReport->setWindowTitle("Histogram");
+    aHistogramReport->setGeneralData(listId,listData); //Pass by reference
+    aHistogramReport->show();
+    center(*aHistogramReport);
+}
+
+void GenReportCtrl::mismatchACLTC(QString idFacilities,QString start,QString end)
 {
     //If we want our facility then use our data.
     //And/or
@@ -166,18 +214,31 @@ void GenReportCtrl::mismatchCCCLTC()
     QList<QString> listDivised;
     listId.clear();
     listData.clear();
+    QList<QString> listIdSend;
 
-    QDateTime aDateA = QDateTime::fromString("1994-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+    listFacilityDemanded.append(idFacilities.split(","));
 
+    for(int g =0;g<listFacilityDemanded.size() -1 ;g=g+2)
+    {
+        listIdSend.append(listFacilityDemanded.at(g));
+    }
 
-    QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+    for(int h =0;h<listIdSend.size();h++)
+    {
+        qDebug() <<"READ LINE"<< listIdSend.at(h);
+    }
 
+    QDateTime aDateA = QDateTime::fromString(start,"yyyy-MM-dd");
+    qDebug() <<aDateA;
 
-    listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"CCC","LTC");
+    QDateTime aDateB = QDateTime::fromString(end,"yyyy-MM-dd");
+    qDebug() <<aDateB;
+
+    listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"AC","LTC");
 
     for (int i =0; i<listResponse.size();i++)
     {
-        //listMismatch.append(XMLReader::getInstance()->readRequestAmountOfBeds(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
+       listMismatch.append(XMLReader::getInstance()->readRequestMismatches(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
     }
 
     listMismatch <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -188,7 +249,6 @@ void GenReportCtrl::mismatchCCCLTC()
     for (int k =0; k<listMismatch.size();k++)
     {
          listDivised.append(listMismatch.at(k).split(","));
-
     }
 
     //0,2,4 Even will be only the ID name
@@ -199,9 +259,6 @@ void GenReportCtrl::mismatchCCCLTC()
         listData.append(listDivised.at(z+1).toDouble()); //Set to double value
     }
 
-    listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
-    listData.append(350);listData.append(175);listData.append(87);
-
     aHistogramReport = new Histogram();
     aHistogramReport->setWindowTitle("Histogram");
     aHistogramReport->setGeneralData(listId,listData); //Pass by reference
@@ -209,7 +266,7 @@ void GenReportCtrl::mismatchCCCLTC()
     center(*aHistogramReport);
 }
 
-void GenReportCtrl::sizeWL()
+void GenReportCtrl::sizeWL(QString idFacilities,QString start,QString end)
 {
     //Ask protocol
     //Get Answer
@@ -227,18 +284,36 @@ void GenReportCtrl::sizeWL()
     listId.clear();
     listData.clear();
 
-    QDateTime aDateA = QDateTime::fromString("1994-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
-    QDateTime aDateB = QDateTime::fromString("2002-05-30T09:00:00","yyyy-MM-dThh:mm:ss");
+    QList<QString> listIdSend;
 
 
-    listResponse = MessageController::getInstance()->setgetMismatchOccLTC(listFacilityDemanded,aDateA,aDateB,"CCC","LTC");
+
+    listFacilityDemanded.append(idFacilities.split(","));
+
+    for(int g =0;g<listFacilityDemanded.size() -1 ;g=g+2)
+    {
+        listIdSend.append(listFacilityDemanded.at(g));
+    }
+
+    for(int h =0;h<listIdSend.size();h++)
+    {
+        qDebug() <<"READ LINE"<< listIdSend.at(h);
+    }
+
+    QDateTime to = QDateTime::fromString(start,"yyyy-MM-dd");
+    qDebug() <<to;
+
+    QDateTime from = QDateTime::fromString(end,"yyyy-MM-dd");
+    qDebug() <<from;
+
+    listResponse = MessageController::getInstance()->setgetWLSize(listFacilityDemanded,to,from);
 
     for (int i =0; i<listResponse.size();i++)
     {
-        //listMismatch.append(XMLReader::getInstance()->readRequestAmountOfBeds(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
+        listMismatch.append(XMLReader::getInstance()->readRequestWaitingListSize(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
     }
 
-    listMismatch <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    listMismatch <<"3,40" <<"4,100";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
  //   listIdBed <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -267,7 +342,7 @@ void GenReportCtrl::sizeWL()
     center(*aHistogramReport);
 }
 
-void GenReportCtrl::waitingTime()
+void GenReportCtrl::waitingTime(QString idFacilities,QString start,QString end)
 {
     //Ask protocol
     //Get Answer
@@ -275,17 +350,53 @@ void GenReportCtrl::waitingTime()
     //Answer #1 for facility id = 1 : 350
     //Answer #2 for facility id = 2 :200
     //Answer #3 for facility id = 3 : 40
+    //Same than Mismatch but protocol will be different
 
-    //NOT TESTED But assumed to be correct
+    //NOT TESTED but assumed it would be the same
 
-    listId.append("Phi");listId.append("Tau");listId.append("Pi"); //Add to lists , list O(1) to add and O(n) to read, good choice.
-    listData.append(350);listData.append(175);listData.append(87);
+
+    QList<QString> listResponse;
+    QList<QString> listFacilityDemanded;
+    QList<QString> listIdBed;
+    QList<QString> listDivised; //To hold the split from the protocol
+    listFacilityDemanded.append("7");
+
+    QDateTime aDateA = QDateTime::fromString(start,"yyyy-MM-dd");
+    qDebug() <<aDateA;
+
+    QDateTime aDateB = QDateTime::fromString(end,"yyyy-MM-dd");
+    qDebug() <<aDateB;
+
+    listResponse = MessageController::getInstance()->setgetWLTime(listFacilityDemanded,aDateA,aDateB);
+    //qDebug() <<XMLReader::getInstance()->requestAmountOfBeds(listFacilityDemanded,"1","1","1",aDateA,aDateB);
+ //   qDebug() << listResponse.at(0).;
+    for (int i =0; i<listResponse.size();i++)
+    {
+         listIdBed.append(XMLReader::getInstance()->readRequestWaitTimes(listResponse.at(i))); //WAIT FOR AARON, UNTILL THEN ASSUME (ID,TOTAL)
+    }
+
+    listIdBed <<"3,40" <<"4,60";  //Fake answer from ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    for (int k =0; k<listIdBed.size();k++)
+    {
+         listDivised.append(listIdBed.at(k).split(","));
+    }
+
+    //0,2,4 Even will be only the ID name
+    //1,3,5 Odd will be data
+    for (int z =0; z<listDivised.size();z=z+2)
+    {
+        listId.append(listDivised.at(z));
+        listData.append(listDivised.at(z+1).toDouble()); //Set to double value
+    }
 
     aHistogramReport = new Histogram();
     aHistogramReport->setWindowTitle("Histogram");
     aHistogramReport->setGeneralData(listId,listData); //Pass by reference
     aHistogramReport->show();
     center(*aHistogramReport);
+
+
 }
 
 
